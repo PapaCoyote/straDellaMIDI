@@ -51,7 +51,6 @@ private:
     juce::HashMap<int, KeyMapping> keyMappings;
     
     void setupDefaultMappings();
-    int getNoteInCycleOfFifths(int startNote, int steps) const;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StradellaKeyboardMapper)
 };

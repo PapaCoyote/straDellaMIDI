@@ -16,25 +16,27 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     keyMappings.clear();
     
     // Row 1: Single notes in cycle of fifths (a,s,d,f,g,h,j,k)
-    // f = C2 (MIDI note 36), cycle of fifths: F, C, G, D, A, E, B
-    // Going backwards from F: Bb, Eb, Ab, Db, Gb
+    // F key = C2 (MIDI note 36)
+    // Cycle of fifths: each step is +7 semitones (or -5 going backwards)
+    // Going up from C2: C, G, D, A, E, B, F#, C#
+    // Going down from C2: C, F, Bb, Eb
     
-    const int baseNote = 36; // C2
+    const int fKeyNote = 36; // F key produces C2
     
     // Mapping for single note row (a,s,d,f,g,h,j,k)
     juce::Array<int> singleNoteKeys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K' };
     
-    // Cycle of fifths positions relative to F (f key maps to F which is -5 semitones from C)
-    // F(-5), C(0), G(7), D(2), A(9), E(4), B(11), F#(6)
-    juce::Array<int> cycleFifthsOffsets = { -5, 0, 7, 2, 9, 4, 11, 6 }; // semitones from baseNote
+    // Cycle of fifths offsets from F key (which is at index 3)
+    // A(-21), S(-14), D(-7), F(0), G(+7), H(+14), J(+21), K(+28)
+    juce::Array<int> cycleFifthsOffsets = { -21, -14, -7, 0, 7, 14, 21, 28 }; // semitones from fKeyNote
     
     for (int i = 0; i < singleNoteKeys.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = singleNoteKeys[i];
         mapping.type = KeyType::SingleNote;
-        mapping.midiNotes.add(baseNote + cycleFifthsOffsets[i]);
-        mapping.description = getMidiNoteName(baseNote + cycleFifthsOffsets[i]);
+        mapping.midiNotes.add(fKeyNote + cycleFifthsOffsets[i]);
+        mapping.description = getMidiNoteName(fKeyNote + cycleFifthsOffsets[i]);
         keyMappings.set(mapping.keyCode, mapping);
     }
     
@@ -47,22 +49,23 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         KeyMapping mapping;
         mapping.keyCode = thirdNoteKeys[i];
         mapping.type = KeyType::ThirdNote;
-        mapping.midiNotes.add(baseNote + cycleFifthsOffsets[i] + 4); // +4 for major third
-        mapping.description = getMidiNoteName(baseNote + cycleFifthsOffsets[i] + 4);
+        mapping.midiNotes.add(fKeyNote + cycleFifthsOffsets[i] + 4); // +4 for major third
+        mapping.description = getMidiNoteName(fKeyNote + cycleFifthsOffsets[i] + 4);
         keyMappings.set(mapping.keyCode, mapping);
     }
     
     // Row 3: Major triads (q,w,e,r,t,y,u,i,o,p)
     // Major triad: root, major third (+4), perfect fifth (+7)
+    // Using the same cycle of fifths pattern
     juce::Array<int> majorChordKeys = { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' };
-    juce::Array<int> majorChordRoots = { -5, 0, 7, 2, 9, 4, 11, 6, 1, 8 }; // Extended cycle of fifths
+    juce::Array<int> majorChordOffsets = { -28, -21, -14, -7, 0, 7, 14, 21, 28, 35 }; // Extended cycle
     
-    for (int i = 0; i < majorChordKeys.size() && i < majorChordRoots.size(); ++i)
+    for (int i = 0; i < majorChordKeys.size() && i < majorChordOffsets.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = majorChordKeys[i];
         mapping.type = KeyType::MajorChord;
-        int root = baseNote + majorChordRoots[i];
+        int root = fKeyNote + majorChordOffsets[i];
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 4);    // Major third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
@@ -73,14 +76,14 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     // Row 4: Minor triads (1,2,3,4,5,6,7)
     // Minor triad: root, minor third (+3), perfect fifth (+7)
     juce::Array<int> minorChordKeys = { '1', '2', '3', '4', '5', '6', '7' };
-    juce::Array<int> minorChordRoots = { -5, 0, 7, 2, 9, 4, 11 }; // Same as single notes
+    juce::Array<int> minorChordOffsets = { -21, -14, -7, 0, 7, 14, 21 }; // Same as single notes A-K
     
-    for (int i = 0; i < minorChordKeys.size() && i < minorChordRoots.size(); ++i)
+    for (int i = 0; i < minorChordKeys.size() && i < minorChordOffsets.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = minorChordKeys[i];
         mapping.type = KeyType::MinorChord;
-        int root = baseNote + minorChordRoots[i];
+        int root = fKeyNote + minorChordOffsets[i];
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 3);    // Minor third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
@@ -136,10 +139,4 @@ bool StradellaKeyboardMapper::loadConfiguration(const juce::File& configFile)
     // For now, just use default configuration
     loadDefaultConfiguration();
     return true;
-}
-
-int StradellaKeyboardMapper::getNoteInCycleOfFifths(int startNote, int steps) const
-{
-    // Each step in the cycle of fifths is 7 semitones up
-    return startNote + (steps * 7);
 }

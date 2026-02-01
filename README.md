@@ -21,12 +21,13 @@ The application maps computer keyboard keys to MIDI notes following a Stradella 
 - Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`
 - Generate single notes arranged in a cycle of fifths
 - Key `F` = C2 (MIDI note 36)
-- Pattern: F, C, G, D, A, E, B, F#
+- Each step in the cycle of fifths moves 7 semitones (a perfect fifth)
+- Full mapping: A=Eb0, S=Bb0, D=F1, F=C2, G=G2, H=D3, J=A3, K=E4
 
 #### Row 4: Bottom Row (Z-M) - Third Intervals
 - Keys `Z`, `X`, `C`, `V`, `B`, `N`, `M`
-- Generate notes a major third above the corresponding single notes
-- Example: Key `V` = E2 (third above C)
+- Generate notes a major third (4 semitones) above the corresponding single notes
+- Example: Key `V` = E2 (third above C2 which is the F key)
 
 ### Visual Interface
 
