@@ -8,6 +8,20 @@
       <FILE id="mz3io1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="hPgJZ1" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="skm001" name="StradellaKeyboardMapper.h" compile="0" resource="0"
+            file="Source/StradellaKeyboardMapper.h"/>
+      <FILE id="skm002" name="StradellaKeyboardMapper.cpp" compile="1" resource="0"
+            file="Source/StradellaKeyboardMapper.cpp"/>
+      <FILE id="kgui01" name="KeyboardGUI.h" compile="0" resource="0"
+            file="Source/KeyboardGUI.h"/>
+      <FILE id="kgui02" name="KeyboardGUI.cpp" compile="1" resource="0"
+            file="Source/KeyboardGUI.cpp"/>
+      <FILE id="mmsg01" name="MIDIMessageDisplay.h" compile="0" resource="0"
+            file="Source/MIDIMessageDisplay.h"/>
+      <FILE id="mmsg02" name="MIDIMessageDisplay.cpp" compile="1" resource="0"
+            file="Source/MIDIMessageDisplay.cpp"/>
+      <FILE id="conf01" name="default_keyboard_mapping.txt" compile="0" resource="1"
+            file="Source/default_keyboard_mapping.txt"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

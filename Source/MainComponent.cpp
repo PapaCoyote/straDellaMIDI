@@ -3,6 +3,31 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
+    // Create GUI components
+    keyboardGUI = std::make_unique<KeyboardGUI>(keyboardMapper);
+    addAndMakeVisible(keyboardGUI.get());
+    
+    midiDisplay = std::make_unique<MIDIMessageDisplay>();
+    addAndMakeVisible(midiDisplay.get());
+    
+    // Setup MIDI output
+    auto midiDevices = juce::MidiOutput::getAvailableDevices();
+    if (!midiDevices.isEmpty())
+    {
+        // Try to open the first available MIDI device
+        midiOutput = juce::MidiOutput::openDevice(midiDevices[0].identifier);
+        
+        if (midiOutput != nullptr)
+        {
+            juce::String msg = "MIDI Output opened: " + midiDevices[0].name;
+            juce::Logger::writeToLog(msg);
+        }
+    }
+    
+    // Add this component as a key listener to receive keyboard events
+    addKeyListener(this);
+    setWantsKeyboardFocus(true);
+    
     // Make sure you set the size of the component after
     // you add any child components.
     setSize (800, 600);
@@ -23,6 +48,9 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    // Remove key listener
+    removeKeyListener(this);
+    
     // This shuts down the audio device and clears the audio source.
     shutdownAudio();
 }
@@ -72,4 +100,122 @@ void MainComponent::resized()
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+    
+    auto area = getLocalBounds();
+    
+    // MIDI display at the bottom
+    if (midiDisplay != nullptr)
+    {
+        auto midiArea = area.removeFromBottom(150);
+        midiDisplay->setBounds(midiArea);
+    }
+    
+    // Keyboard GUI takes the remaining space
+    if (keyboardGUI != nullptr)
+    {
+        keyboardGUI->setBounds(area);
+    }
+}
+
+bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent)
+{
+    int keyCode = key.getKeyCode();
+    
+    // Convert to uppercase for letter keys
+    if (keyCode >= 'a' && keyCode <= 'z')
+        keyCode = keyCode - 'a' + 'A';
+    
+    // Check if this key is already pressed to avoid repeated triggering
+    if (!currentlyPressedKeys.contains(keyCode))
+    {
+        handleKeyPress(keyCode);
+        currentlyPressedKeys.add(keyCode);
+        return true;
+    }
+    
+    return false;
+}
+
+bool MainComponent::keyStateChanged(bool isKeyDown, juce::Component* originatingComponent)
+{
+    // Handle key releases
+    if (!isKeyDown)
+    {
+        // Check which keys were released
+        for (int i = currentlyPressedKeys.size() - 1; i >= 0; --i)
+        {
+            int keyCode = currentlyPressedKeys[i];
+            
+            // Check if the key is still down
+            bool stillDown = false;
+            
+            // Check common keys (simplified check)
+            if (juce::KeyPress::isKeyCurrentlyDown(keyCode))
+                stillDown = true;
+            
+            if (!stillDown)
+            {
+                handleKeyRelease(keyCode);
+                currentlyPressedKeys.remove(i);
+            }
+        }
+    }
+    
+    return false;
+}
+
+void MainComponent::handleKeyPress(int keyCode)
+{
+    bool isValidKey = false;
+    auto midiNotes = keyboardMapper.getMidiNotesForKey(keyCode, isValidKey);
+    
+    if (isValidKey && !midiNotes.isEmpty())
+    {
+        // Update GUI
+        if (keyboardGUI != nullptr)
+            keyboardGUI->setKeyPressed(keyCode, true);
+        
+        // Send MIDI note on messages
+        for (int noteNumber : midiNotes)
+        {
+            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+            sendMidiMessage(message);
+            
+            // Display in MIDI log
+            if (midiDisplay != nullptr)
+                midiDisplay->addMidiMessage(message);
+        }
+    }
+}
+
+void MainComponent::handleKeyRelease(int keyCode)
+{
+    bool isValidKey = false;
+    auto midiNotes = keyboardMapper.getMidiNotesForKey(keyCode, isValidKey);
+    
+    if (isValidKey && !midiNotes.isEmpty())
+    {
+        // Update GUI
+        if (keyboardGUI != nullptr)
+            keyboardGUI->setKeyPressed(keyCode, false);
+        
+        // Send MIDI note off messages
+        for (int noteNumber : midiNotes)
+        {
+            auto message = juce::MidiMessage::noteOff(1, noteNumber);
+            sendMidiMessage(message);
+            
+            // Display in MIDI log
+            if (midiDisplay != nullptr)
+                midiDisplay->addMidiMessage(message);
+        }
+    }
+}
+
+void MainComponent::sendMidiMessage(const juce::MidiMessage& message)
+{
+    if (midiOutput != nullptr)
+    {
+        midiOutput->sendMessageNow(message);
+    }
 }

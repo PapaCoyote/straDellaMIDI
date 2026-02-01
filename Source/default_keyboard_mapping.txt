@@ -1,0 +1,47 @@
+# Stradella Accordion Keyboard Mapping Configuration
+# This file defines the mapping between computer keyboard keys and MIDI notes
+
+# Format:
+# key_character = midi_notes (comma-separated for chords)
+# Lines starting with # are comments
+
+# Row 1: Single notes in cycle of fifths
+# Base note is C2 (MIDI 36), F key = F (MIDI 31)
+A = 31      # F1
+S = 36      # C2
+D = 43      # G2
+F = 38      # D2
+G = 45      # A2
+H = 40      # E2
+J = 47      # B2
+K = 42      # F#2
+
+# Row 2: Third notes (major third above single notes)
+Z = 35      # A#1 (third above F)
+X = 40      # E2  (third above C)
+C = 47      # B2  (third above G)
+V = 42      # F#2 (third above D)
+B = 49      # C#3 (third above A)
+N = 44      # G#2 (third above E)
+M = 51      # D#3 (third above B)
+
+# Row 3: Major chords (root, major third, perfect fifth)
+Q = 31,35,38    # F Major
+W = 36,40,43    # C Major
+E = 43,47,50    # G Major
+R = 38,42,45    # D Major
+T = 45,49,52    # A Major
+Y = 40,44,47    # E Major
+U = 47,51,54    # B Major
+I = 42,46,49    # F# Major
+O = 37,41,44    # C# Major
+P = 44,48,51    # G# Major
+
+# Row 4: Minor chords (root, minor third, perfect fifth)
+1 = 31,34,38    # F Minor
+2 = 36,39,43    # C Minor
+3 = 43,46,50    # G Minor
+4 = 38,41,45    # D Minor
+5 = 45,48,52    # A Minor
+6 = 40,43,47    # E Minor
+7 = 47,50,54    # B Minor
