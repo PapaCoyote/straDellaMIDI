@@ -57,6 +57,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     // Row 3: Major triads (q,w,e,r,t,y,u,i,o,p)
     // Major triad: root, major third (+4), perfect fifth (+7)
     // Using the same cycle of fifths pattern
+    // Shifted up one octave (+12 semitones)
     juce::Array<int> majorChordKeys = { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' };
     juce::Array<int> majorChordOffsets = { -28, -21, -14, -7, 0, 7, 14, 21, 28, 35 }; // Extended cycle
     
@@ -65,7 +66,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         KeyMapping mapping;
         mapping.keyCode = majorChordKeys[i];
         mapping.type = KeyType::MajorChord;
-        int root = fKeyNote + majorChordOffsets[i];
+        int root = fKeyNote + majorChordOffsets[i] + 12; // +12 for one octave up
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 4);    // Major third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
@@ -75,6 +76,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     
     // Row 4: Minor triads (1,2,3,4,5,6,7)
     // Minor triad: root, minor third (+3), perfect fifth (+7)
+    // Shifted up one octave (+12 semitones)
     juce::Array<int> minorChordKeys = { '1', '2', '3', '4', '5', '6', '7' };
     juce::Array<int> minorChordOffsets = { -21, -14, -7, 0, 7, 14, 21 }; // Same as single notes A-K
     
@@ -83,7 +85,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         KeyMapping mapping;
         mapping.keyCode = minorChordKeys[i];
         mapping.type = KeyType::MinorChord;
-        int root = fKeyNote + minorChordOffsets[i];
+        int root = fKeyNote + minorChordOffsets[i] + 12; // +12 for one octave up
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 3);    // Minor third
         mapping.midiNotes.add(root + 7);    // Perfect fifth

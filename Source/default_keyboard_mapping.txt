@@ -29,23 +29,23 @@ M = 61      # C#4 (third above A3)
 
 # Row 3: Major chords (root, major third, perfect fifth)
 # Extended cycle of fifths for 10 keys
-Q = 8,12,15      # Ab0 Major
-W = 15,19,22     # Eb0 Major
-E = 22,26,29     # Bb0 Major
-R = 29,33,36     # F1 Major
-T = 36,40,43     # C2 Major
-Y = 43,47,50     # G2 Major
-U = 50,54,57     # D3 Major
-I = 57,61,64     # A3 Major
-O = 64,68,71     # E4 Major
-P = 71,75,78     # B4 Major
+Q = 20,24,27     # Ab1 Major
+W = 27,31,34     # Eb1 Major
+E = 34,38,41     # Bb1 Major
+R = 41,45,48     # F2 Major
+T = 48,52,55     # C3 Major
+Y = 55,59,62     # G3 Major
+U = 62,66,69     # D4 Major
+I = 69,73,76     # A4 Major
+O = 76,80,83     # E5 Major
+P = 83,87,90     # B5 Major
 
 # Row 4: Minor chords (root, minor third, perfect fifth)
 # Same root notes as A-G keys (rows 1), but with minor third
-1 = 15,18,22     # Eb0 Minor
-2 = 22,25,29     # Bb0 Minor
-3 = 29,32,36     # F1 Minor
-4 = 36,39,43     # C2 Minor
-5 = 43,46,50     # G2 Minor
-6 = 50,53,57     # D3 Minor
-7 = 57,60,64     # A3 Minor
+1 = 27,30,34     # Eb1 Minor
+2 = 34,37,41     # Bb1 Minor
+3 = 41,44,48     # F2 Minor
+4 = 48,51,55     # C3 Minor
+5 = 55,58,62     # G3 Minor
+6 = 62,65,69     # D4 Minor
+7 = 69,72,76     # A4 Minor
