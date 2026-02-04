@@ -178,6 +178,17 @@ The `StradellaKeyboardMapper::loadConfiguration()` method can be extended to:
 - Sustain pedal support
 - Customizable colors and themes
 
+## Development Workflow
+
+### Contributing
+For information on how to work with branches and merge your changes, see:
+- **[Branch Merging Guide](BRANCH_MERGING_GUIDE.md)** - Complete guide to Git workflows for this project
+
+### Additional Documentation
+- **[Architecture](ARCHITECTURE.md)** - Component architecture and design patterns
+- **[Quick Reference](QUICK_REFERENCE.md)** - Keyboard layout and mappings
+- **[Implementation Summary](IMPLEMENTATION_SUMMARY.md)** - Development history and technical details
+
 ## License
 
 This project uses the JUCE framework. Please ensure compliance with JUCE licensing requirements.
