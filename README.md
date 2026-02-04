@@ -7,25 +7,25 @@ A JUCE-based application that emulates a Stradella bass accordion using your com
 ### Keyboard Mapping
 The application maps computer keyboard keys to MIDI notes following a Stradella accordion layout:
 
-#### Row 1: Numbers (1-7) - Minor Chords
-- Keys `1`, `2`, `3`, `4`, `5`, `6`, `7`
+#### Row 1: Numbers (1-0) - Minor Chords
+- Keys `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`
 - Generate minor triads (root + minor third + perfect fifth)
-- Example: Key `4` = D Minor (D, F, A)
+- Example: Key `4` = C Minor (C, Eb, G)
 
 #### Row 2: Top Letters (Q-P) - Major Chords
 - Keys `Q`, `W`, `E`, `R`, `T`, `Y`, `U`, `I`, `O`, `P`
 - Generate major triads (root + major third + perfect fifth)
 - Example: Key `R` = C Major (C, E, G)
 
-#### Row 3: Home Row (A-K) - Single Notes (Cycle of Fifths)
-- Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`
+#### Row 3: Home Row (A-') - Single Notes (Cycle of Fifths)
+- Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`, `L`, `;`, `'`
 - Generate single notes arranged in a cycle of fifths
 - Key `F` = C2 (MIDI note 36)
 - Each step in the cycle of fifths moves 7 semitones (a perfect fifth)
-- Full mapping: A=Eb0, S=Bb0, D=F1, F=C2, G=G2, H=D3, J=A3, K=E4
+- Full mapping: A=Eb0, S=Bb0, D=F1, F=C2, G=G2, H=D3, J=A3, K=E4, L=B4, ;=F#5, '=C#6
 
-#### Row 4: Bottom Row (Z-M) - Third Intervals
-- Keys `Z`, `X`, `C`, `V`, `B`, `N`, `M`
+#### Row 4: Bottom Row (Z-/) - Third Intervals
+- Keys `Z`, `X`, `C`, `V`, `B`, `N`, `M`, `,`, `.`, `/`
 - Generate notes a major third (4 semitones) above the corresponding single notes
 - Example: Key `V` = E2 (third above C2 which is the F key)
 
@@ -121,10 +121,10 @@ This is a JUCE project. To build:
 2. Ensure a MIDI output device is available
 3. Click on the application window to give it keyboard focus
 4. Press keys to generate MIDI notes:
-   - Single notes: A, S, D, F, G, H, J, K
-   - Third intervals: Z, X, C, V, B, N, M
+   - Single notes: A, S, D, F, G, H, J, K, L, ;, '
+   - Third intervals: Z, X, C, V, B, N, M, ,, ., /
    - Major chords: Q, W, E, R, T, Y, U, I, O, P
-   - Minor chords: 1, 2, 3, 4, 5, 6, 7
+   - Minor chords: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
 5. Watch the visual feedback on the keyboard display
 6. Monitor MIDI messages in the bottom panel
 7. Click "MIDI Messages" button to collapse/expand the message log

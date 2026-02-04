@@ -36,7 +36,7 @@
 
 ## Key Mapping Summary
 
-### Single Notes (A-K Row)
+### Single Notes (A-' Row)
 The **F key = C2 (MIDI 36)** is the anchor note.
 Each step in the cycle of fifths = 7 semitones.
 
@@ -50,8 +50,11 @@ Each step in the cycle of fifths = 7 semitones.
 | H   | D3   | 50   | +2 fifths      |
 | J   | A3   | 57   | +3 fifths      |
 | K   | E4   | 64   | +4 fifths      |
+| L   | B4   | 71   | +5 fifths      |
+| ;   | F#5  | 78   | +6 fifths      |
+| '   | C#6  | 85   | +7 fifths      |
 
-### Third Intervals (Z-M Row)
+### Third Intervals (Z-/ Row)
 Each note is a **major third (+4 semitones)** above the corresponding single note.
 
 | Key | Base Note | Third Note | MIDI |
@@ -63,6 +66,9 @@ Each note is a **major third (+4 semitones)** above the corresponding single not
 | B   | G2  (G)   | B2         | 47   |
 | N   | D3  (H)   | F#3        | 54   |
 | M   | A3  (J)   | C#4        | 61   |
+| ,   | E4  (K)   | G#4        | 68   |
+| .   | B4  (L)   | D#5        | 75   |
+| /   | F#5 (;)   | A#5        | 82   |
 
 ### Major Chords (Q-P Row)
 Each chord contains: **Root + Major 3rd + Perfect 5th**
@@ -80,7 +86,7 @@ Each chord contains: **Root + Major 3rd + Perfect 5th**
 | O   | E Major  | E, G#, B    | 76, 80, 83  |
 | P   | B Major  | B, D#, F#   | 83, 87, 90  |
 
-### Minor Chords (1-7 Row)
+### Minor Chords (1-0 Row)
 Each chord contains: **Root + Minor 3rd + Perfect 5th**
 
 | Key | Chord    | Notes       | MIDI Notes  |
@@ -92,6 +98,9 @@ Each chord contains: **Root + Minor 3rd + Perfect 5th**
 | 5   | G Minor  | G, Bb, D    | 55, 58, 62  |
 | 6   | D Minor  | D, F, A     | 62, 65, 69  |
 | 7   | A Minor  | A, C, E     | 69, 72, 76  |
+| 8   | E Minor  | E, G, B     | 76, 79, 83  |
+| 9   | B Minor  | B, D, F#    | 83, 86, 90  |
+| 0   | F# Minor | F#, A, C#   | 90, 93, 97  |
 
 ## Usage Tips
 
