@@ -15,7 +15,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
 {
     keyMappings.clear();
     
-    // Row 1: Single notes in cycle of fifths (a,s,d,f,g,h,j,k)
+    // Row 1: Single notes in cycle of fifths (a,s,d,f,g,h,j,k,l,;,')
     // F key = C2 (MIDI note 36)
     // Cycle of fifths: each step is +7 semitones (or -5 going backwards)
     // Going up from C2: C, G, D, A, E, B, F#, C#
@@ -23,12 +23,12 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     
     const int fKeyNote = 36; // F key produces C2
     
-    // Mapping for single note row (a,s,d,f,g,h,j,k)
-    juce::Array<int> singleNoteKeys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K' };
+    // Mapping for single note row (a,s,d,f,g,h,j,k,l,;,')
+    juce::Array<int> singleNoteKeys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'' };
     
     // Cycle of fifths offsets from F key (which is at index 3)
-    // A(-21), S(-14), D(-7), F(0), G(+7), H(+14), J(+21), K(+28)
-    juce::Array<int> cycleFifthsOffsets = { -21, -14, -7, 0, 7, 14, 21, 28 }; // semitones from fKeyNote
+    // A(-21), S(-14), D(-7), F(0), G(+7), H(+14), J(+21), K(+28), L(+35), ;(+42), '(+49)
+    juce::Array<int> cycleFifthsOffsets = { -21, -14, -7, 0, 7, 14, 21, 28, 35, 42, 49 }; // semitones from fKeyNote
     
     for (int i = 0; i < singleNoteKeys.size(); ++i)
     {
@@ -40,9 +40,9 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         keyMappings.set(mapping.keyCode, mapping);
     }
     
-    // Row 2: Third above (z,x,c,v,b,n,m)
+    // Row 2: Third above (z,x,c,v,b,n,m,comma,period,slash)
     // These are a major third (4 semitones) above the corresponding single notes
-    juce::Array<int> thirdNoteKeys = { 'Z', 'X', 'C', 'V', 'B', 'N', 'M' };
+    juce::Array<int> thirdNoteKeys = { 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/' };
     
     for (int i = 0; i < thirdNoteKeys.size() && i < cycleFifthsOffsets.size(); ++i)
     {
@@ -57,6 +57,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     // Row 3: Major triads (q,w,e,r,t,y,u,i,o,p)
     // Major triad: root, major third (+4), perfect fifth (+7)
     // Using the same cycle of fifths pattern
+    // Shifted up one octave (+12 semitones)
     juce::Array<int> majorChordKeys = { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' };
     juce::Array<int> majorChordOffsets = { -28, -21, -14, -7, 0, 7, 14, 21, 28, 35 }; // Extended cycle
     
@@ -65,7 +66,7 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         KeyMapping mapping;
         mapping.keyCode = majorChordKeys[i];
         mapping.type = KeyType::MajorChord;
-        int root = fKeyNote + majorChordOffsets[i];
+        int root = fKeyNote + majorChordOffsets[i] + 12; // +12 for one octave up
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 4);    // Major third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
@@ -73,17 +74,18 @@ void StradellaKeyboardMapper::setupDefaultMappings()
         keyMappings.set(mapping.keyCode, mapping);
     }
     
-    // Row 4: Minor triads (1,2,3,4,5,6,7)
+    // Row 4: Minor triads (1,2,3,4,5,6,7,8,9,0)
     // Minor triad: root, minor third (+3), perfect fifth (+7)
-    juce::Array<int> minorChordKeys = { '1', '2', '3', '4', '5', '6', '7' };
-    juce::Array<int> minorChordOffsets = { -21, -14, -7, 0, 7, 14, 21 }; // Same as single notes A-K
+    // Shifted up one octave (+12 semitones)
+    juce::Array<int> minorChordKeys = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+    juce::Array<int> minorChordOffsets = { -21, -14, -7, 0, 7, 14, 21, 28, 35, 42 }; // Extended cycle of fifths
     
     for (int i = 0; i < minorChordKeys.size() && i < minorChordOffsets.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = minorChordKeys[i];
         mapping.type = KeyType::MinorChord;
-        int root = fKeyNote + minorChordOffsets[i];
+        int root = fKeyNote + minorChordOffsets[i] + 12; // +12 for one octave up
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 3);    // Minor third
         mapping.midiNotes.add(root + 7);    // Perfect fifth

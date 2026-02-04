@@ -36,7 +36,7 @@
 
 ## Key Mapping Summary
 
-### Single Notes (A-K Row)
+### Single Notes (A-' Row)
 The **F key = C2 (MIDI 36)** is the anchor note.
 Each step in the cycle of fifths = 7 semitones.
 
@@ -50,8 +50,11 @@ Each step in the cycle of fifths = 7 semitones.
 | H   | D3   | 50   | +2 fifths      |
 | J   | A3   | 57   | +3 fifths      |
 | K   | E4   | 64   | +4 fifths      |
+| L   | B4   | 71   | +5 fifths      |
+| ;   | F#5  | 78   | +6 fifths      |
+| '   | C#6  | 85   | +7 fifths      |
 
-### Third Intervals (Z-M Row)
+### Third Intervals (Z-/ Row)
 Each note is a **major third (+4 semitones)** above the corresponding single note.
 
 | Key | Base Note | Third Note | MIDI |
@@ -63,35 +66,41 @@ Each note is a **major third (+4 semitones)** above the corresponding single not
 | B   | G2  (G)   | B2         | 47   |
 | N   | D3  (H)   | F#3        | 54   |
 | M   | A3  (J)   | C#4        | 61   |
+| ,   | E4  (K)   | G#4        | 68   |
+| .   | B4  (L)   | D#5        | 75   |
+| /   | F#5 (;)   | A#5        | 82   |
 
 ### Major Chords (Q-P Row)
 Each chord contains: **Root + Major 3rd + Perfect 5th**
 
 | Key | Chord    | Notes       | MIDI Notes  |
 |-----|----------|-------------|-------------|
-| Q   | Ab Major | Ab, C, Eb   | 8, 12, 15   |
-| W   | Eb Major | Eb, G, Bb   | 15, 19, 22  |
-| E   | Bb Major | Bb, D, F    | 22, 26, 29  |
-| R   | F Major  | F, A, C     | 29, 33, 36  |
-| T   | C Major  | C, E, G     | 36, 40, 43  |
-| Y   | G Major  | G, B, D     | 43, 47, 50  |
-| U   | D Major  | D, F#, A    | 50, 54, 57  |
-| I   | A Major  | A, C#, E    | 57, 61, 64  |
-| O   | E Major  | E, G#, B    | 64, 68, 71  |
-| P   | B Major  | B, D#, F#   | 71, 75, 78  |
+| Q   | Ab Major | Ab, C, Eb   | 20, 24, 27  |
+| W   | Eb Major | Eb, G, Bb   | 27, 31, 34  |
+| E   | Bb Major | Bb, D, F    | 34, 38, 41  |
+| R   | F Major  | F, A, C     | 41, 45, 48  |
+| T   | C Major  | C, E, G     | 48, 52, 55  |
+| Y   | G Major  | G, B, D     | 55, 59, 62  |
+| U   | D Major  | D, F#, A    | 62, 66, 69  |
+| I   | A Major  | A, C#, E    | 69, 73, 76  |
+| O   | E Major  | E, G#, B    | 76, 80, 83  |
+| P   | B Major  | B, D#, F#   | 83, 87, 90  |
 
-### Minor Chords (1-7 Row)
+### Minor Chords (1-0 Row)
 Each chord contains: **Root + Minor 3rd + Perfect 5th**
 
 | Key | Chord    | Notes       | MIDI Notes  |
 |-----|----------|-------------|-------------|
-| 1   | Eb Minor | Eb, Gb, Bb  | 15, 18, 22  |
-| 2   | Bb Minor | Bb, Db, F   | 22, 25, 29  |
-| 3   | F Minor  | F, Ab, C    | 29, 32, 36  |
-| 4   | C Minor  | C, Eb, G    | 36, 39, 43  |
-| 5   | G Minor  | G, Bb, D    | 43, 46, 50  |
-| 6   | D Minor  | D, F, A     | 50, 53, 57  |
-| 7   | A Minor  | A, C, E     | 57, 60, 64  |
+| 1   | Eb Minor | Eb, Gb, Bb  | 27, 30, 34  |
+| 2   | Bb Minor | Bb, Db, F   | 34, 37, 41  |
+| 3   | F Minor  | F, Ab, C    | 41, 44, 48  |
+| 4   | C Minor  | C, Eb, G    | 48, 51, 55  |
+| 5   | G Minor  | G, Bb, D    | 55, 58, 62  |
+| 6   | D Minor  | D, F, A     | 62, 65, 69  |
+| 7   | A Minor  | A, C, E     | 69, 72, 76  |
+| 8   | E Minor  | E, G, B     | 76, 79, 83  |
+| 9   | B Minor  | B, D, F#    | 83, 86, 90  |
+| 0   | F# Minor | F#, A, C#   | 90, 93, 97  |
 
 ## Usage Tips
 
