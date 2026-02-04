@@ -7,7 +7,7 @@
 
 # Row 1: Single notes in cycle of fifths
 # F key = C2 (MIDI 36), each step in cycle of fifths is +/- 7 semitones
-# A(-21), S(-14), D(-7), F(0=C2), G(+7), H(+14), J(+21), K(+28)
+# A(-21), S(-14), D(-7), F(0=C2), G(+7), H(+14), J(+21), K(+28), L(+35), ;(+42), '(+49)
 A = 15      # Eb0
 S = 22      # Bb0  
 D = 29      # F1
@@ -16,6 +16,9 @@ G = 43      # G2
 H = 50      # D3
 J = 57      # A3
 K = 64      # E4
+L = 71      # B4
+; = 78      # F#5
+' = 85      # C#6
 
 # Row 2: Third notes (major third above single notes)
 # Each note is +4 semitones above the corresponding single note
@@ -26,6 +29,9 @@ V = 40      # E2  (third above C2)
 B = 47      # B2  (third above G2)
 N = 54      # F#3 (third above D3)
 M = 61      # C#4 (third above A3)
+, = 68      # G#4 (third above E4)
+. = 75      # Eb5 (third above B4)
+/ = 82      # Bb5 (third above F#5)
 
 # Row 3: Major chords (root, major third, perfect fifth)
 # Extended cycle of fifths for 10 keys
@@ -49,3 +55,6 @@ P = 83,87,90     # B5 Major
 5 = 55,58,62     # G3 Minor
 6 = 62,65,69     # D4 Minor
 7 = 69,72,76     # A4 Minor
+8 = 76,79,83     # E5 Minor
+9 = 83,86,90     # B5 Minor
+0 = 90,93,97     # F#6 Minor
