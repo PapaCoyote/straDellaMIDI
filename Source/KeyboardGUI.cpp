@@ -23,7 +23,6 @@ void KeyboardGUI::setupKeyLayout()
     
     // Row 1: Numbers (1-0) - Minor chords
     juce::Array<int> row1Keys = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-    juce::Array<juce::String> row1Labels = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
     
     float startX = 80.0f;
     float currentY = 20.0f;
@@ -41,7 +40,6 @@ void KeyboardGUI::setupKeyLayout()
     
     // Row 2: QWERTY (Q-P) - Major chords
     juce::Array<int> row2Keys = { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' };
-    juce::Array<juce::String> row2Labels = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" };
     
     currentY += keyHeight + rowSpacing;
     startX = 90.0f;
@@ -59,7 +57,6 @@ void KeyboardGUI::setupKeyLayout()
     
     // Row 3: ASDF (A-') - Single notes (cycle of fifths)
     juce::Array<int> row3Keys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'' };
-    juce::Array<juce::String> row3Labels = { "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'" };
     
     currentY += keyHeight + rowSpacing;
     startX = 100.0f;
@@ -77,7 +74,6 @@ void KeyboardGUI::setupKeyLayout()
     
     // Row 4: ZXCV (Z-/) - Third notes
     juce::Array<int> row4Keys = { 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/' };
-    juce::Array<juce::String> row4Labels = { "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/" };
     
     currentY += keyHeight + rowSpacing;
     startX = 120.0f;
