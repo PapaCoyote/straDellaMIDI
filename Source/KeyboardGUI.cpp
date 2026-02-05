@@ -21,9 +21,9 @@ void KeyboardGUI::setupKeyLayout()
     const float spacing = 5.0f;
     const float rowSpacing = 10.0f;
     
-    // Row 1: Numbers (1-7) - Minor chords
-    juce::Array<int> row1Keys = { '1', '2', '3', '4', '5', '6', '7' };
-    juce::Array<juce::String> row1Labels = { "1", "2", "3", "4", "5", "6", "7" };
+    // Row 1: Numbers (1-0) - Minor chords
+    juce::Array<int> row1Keys = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+    juce::Array<juce::String> row1Labels = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" };
     
     float startX = 80.0f;
     float currentY = 20.0f;
@@ -32,7 +32,7 @@ void KeyboardGUI::setupKeyLayout()
     {
         KeyButton key;
         key.keyCode = row1Keys[i];
-        key.label = row1Labels[i];
+        key.label = keyMapper.getKeyDescription(key.keyCode);
         key.isPressed = false;
         key.type = keyMapper.getKeyType(key.keyCode);
         key.bounds = juce::Rectangle<float>(startX + i * (keyWidth + spacing), currentY, keyWidth, keyHeight);
@@ -50,16 +50,16 @@ void KeyboardGUI::setupKeyLayout()
     {
         KeyButton key;
         key.keyCode = row2Keys[i];
-        key.label = row2Labels[i];
+        key.label = keyMapper.getKeyDescription(key.keyCode);
         key.isPressed = false;
         key.type = keyMapper.getKeyType(key.keyCode);
         key.bounds = juce::Rectangle<float>(startX + i * (keyWidth + spacing), currentY, keyWidth, keyHeight);
         keys.add(key);
     }
     
-    // Row 3: ASDF (A-K) - Single notes (cycle of fifths)
-    juce::Array<int> row3Keys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K' };
-    juce::Array<juce::String> row3Labels = { "A", "S", "D", "F", "G", "H", "J", "K" };
+    // Row 3: ASDF (A-') - Single notes (cycle of fifths)
+    juce::Array<int> row3Keys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'' };
+    juce::Array<juce::String> row3Labels = { "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'" };
     
     currentY += keyHeight + rowSpacing;
     startX = 100.0f;
@@ -68,16 +68,16 @@ void KeyboardGUI::setupKeyLayout()
     {
         KeyButton key;
         key.keyCode = row3Keys[i];
-        key.label = row3Labels[i];
+        key.label = keyMapper.getKeyDescription(key.keyCode);
         key.isPressed = false;
         key.type = keyMapper.getKeyType(key.keyCode);
         key.bounds = juce::Rectangle<float>(startX + i * (keyWidth + spacing), currentY, keyWidth, keyHeight);
         keys.add(key);
     }
     
-    // Row 4: ZXCV (Z-M) - Third notes
-    juce::Array<int> row4Keys = { 'Z', 'X', 'C', 'V', 'B', 'N', 'M' };
-    juce::Array<juce::String> row4Labels = { "Z", "X", "C", "V", "B", "N", "M" };
+    // Row 4: ZXCV (Z-/) - Third notes
+    juce::Array<int> row4Keys = { 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/' };
+    juce::Array<juce::String> row4Labels = { "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/" };
     
     currentY += keyHeight + rowSpacing;
     startX = 120.0f;
@@ -86,7 +86,7 @@ void KeyboardGUI::setupKeyLayout()
     {
         KeyButton key;
         key.keyCode = row4Keys[i];
-        key.label = row4Labels[i];
+        key.label = keyMapper.getKeyDescription(key.keyCode);
         key.isPressed = false;
         key.type = keyMapper.getKeyType(key.keyCode);
         key.bounds = juce::Rectangle<float>(startX + i * (keyWidth + spacing), currentY, keyWidth, keyHeight);
@@ -159,15 +159,6 @@ void KeyboardGUI::drawKey(juce::Graphics& g, const KeyButton& key)
     g.setColour(key.isPressed ? juce::Colours::white : juce::Colours::lightgrey);
     g.setFont(16.0f);
     g.drawText(key.label, key.bounds, juce::Justification::centred);
-    
-    // Draw note description below key
-    juce::String description = keyMapper.getKeyDescription(key.keyCode);
-    if (description.isNotEmpty())
-    {
-        g.setFont(9.0f);
-        auto descBounds = key.bounds.withY(key.bounds.getBottom() - 12);
-        g.drawText(description, descBounds, juce::Justification::centred);
-    }
 }
 
 juce::Colour KeyboardGUI::getColourForKeyType(StradellaKeyboardMapper::KeyType type, bool isPressed) const
