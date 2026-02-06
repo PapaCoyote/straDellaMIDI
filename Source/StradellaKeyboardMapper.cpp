@@ -26,10 +26,10 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     // Mapping for single note row (a,s,d,f,g,h,j,k,l,;) - removed apostrophe
     juce::Array<int> singleNoteKeys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';' };
     
-    // Cycle of fifths within octave 1, wrapping around (mod 12 to stay in octave)
+    // Cycle of fifths within octave 1 (all notes MIDI 24-35)
     // A, S, D, F, G, H, J, K, L, ;
-    // We'll use cycle of fifths pattern: Eb, Bb, F, C, G, D, A, E, B, F#
-    juce::Array<int> singleNoteMidiValues = { 27, 22, 29, 24, 31, 26, 33, 28, 35, 30 }; // Octave 1 notes
+    // Cycle of fifths pattern: Eb, Bb, F, C, G, D, A, E, B, F#
+    juce::Array<int> singleNoteMidiValues = { 27, 34, 29, 24, 31, 26, 33, 28, 35, 30 }; // Octave 1 notes
     
     for (int i = 0; i < singleNoteKeys.size(); ++i)
     {

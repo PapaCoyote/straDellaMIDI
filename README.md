@@ -22,7 +22,7 @@ The application maps computer keyboard keys to MIDI notes following a Stradella 
 - Generate single notes arranged in a cycle of fifths
 - Key `F` = C1 (MIDI note 24)
 - All notes in Octave 1 as per Stradella bass system
-- Full mapping: A=Eb1, S=Bb0, D=F1, F=C1, G=G1, H=D1, J=A1, K=E1, L=B1, ;=F#1
+- Full mapping: A=Eb1, S=Bb1, D=F1, F=C1, G=G1, H=D1, J=A1, K=E1, L=B1, ;=F#1
 
 #### Row 4: Bottom Row (Z-/) - Third Intervals
 - Keys `Z`, `X`, `C`, `V`, `B`, `N`, `M`, `,`, `.`, `/`

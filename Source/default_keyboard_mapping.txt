@@ -9,7 +9,7 @@
 # F key = C1 (MIDI 24), arranged in cycle of fifths
 # A, S, D, F, G, H, J, K, L, ;
 A = 27      # Eb1
-S = 22      # Bb0  
+S = 34      # Bb1  
 D = 29      # F1
 F = 24      # C1
 G = 31      # G1
@@ -22,14 +22,14 @@ L = 35      # B1
 # Row 2: Third notes (major third above single notes, all in Octave 1)
 # Each note is +4 semitones above the corresponding single note (wrapping within octave)
 Z = 31      # G1  (third above Eb1)
-X = 26      # D1  (third above Bb0)
+X = 26      # D1  (third above Bb1, wraps to octave 1)
 C = 33      # A1  (third above F1)
 V = 28      # E1  (third above C1)
 B = 35      # B1  (third above G1)
 N = 30      # F#1 (third above D1)
-M = 25      # C#1 (third above A1)
+M = 25      # C#1 (third above A1, wraps to octave 1)
 , = 32      # G#1 (third above E1)
-. = 27      # Eb1 (third above B1)
+. = 27      # Eb1 (third above B1, wraps to octave 1)
 / = 34      # Bb1 (third above F#1)
 
 # Row 3: Major chords (root, major third, perfect fifth)
