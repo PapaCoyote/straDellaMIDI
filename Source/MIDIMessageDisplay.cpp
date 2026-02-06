@@ -89,10 +89,13 @@ void MIDIMessageDisplay::processPendingMessages()
 
 void MIDIMessageDisplay::clearMessages()
 {
-    const juce::ScopedLock lock(queueLock);
-    pendingMessages.clear();
-    messageHistory.clear();
-    needsUpdate = true;
+    {
+        const juce::ScopedLock lock(queueLock);
+        pendingMessages.clear();
+        messageHistory.clear();
+    }
+    // Update display immediately (outside lock) to show cleared state
+    updateMessageDisplay();
 }
 
 void MIDIMessageDisplay::setExpanded(bool shouldBeExpanded)

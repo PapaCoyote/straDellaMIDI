@@ -138,9 +138,11 @@
 3. Compare with MIDI monitor software
 
 **Expected Result**:
-- All messages appear in log (none dropped)
+- All messages appear in log under normal playing conditions
 - Timestamps are accurate (within 33ms)
 - Log may be slightly delayed (up to 33ms), but complete
+
+**Note**: Under extreme rapid input (>100 messages/second), the message queue could theoretically overflow. However, this is unlikely during normal musical performance. The queue is unbounded in current implementation, so messages should not drop. MIDI output is unaffected regardless - only the display log would be impacted.
 
 ### Test 7: High-Velocity Input
 
