@@ -19,13 +19,13 @@
                                 ▼
         ┌───────────────────────────────────────────────────┐
         │             MainComponent                          │
-        │         (AudioAppComponent)                        │
+        │         (juce::Component)                          │
         │                                                    │
         │  Responsibilities:                                 │
         │  • Keyboard event handling (KeyListener)          │
         │  • MIDI output management                         │
         │  • Component coordination                         │
-        │  • Audio device management                        │
+        │  • Low-latency MIDI message transmission          │
         └───┬───────────────────────────┬───────────────┬───┘
             │                           │               │
             │ owns                      │ owns          │ owns
@@ -238,19 +238,20 @@
 ## Threading Model
 
 ```
-┌──────────────────┐          ┌──────────────────┐
-│  Message Thread  │          │  Audio Thread    │
-│  (GUI + Input)   │          │                  │
-├──────────────────┤          ├──────────────────┤
-│ • KeyboardGUI    │          │ • prepareToPlay()│
-│ • MIDIDisplay    │          │ • getNextAudio   │
-│ • KeyListener    │          │   Block()        │
-│ • MIDI Output    │          │ • releaseRes()   │
-└──────────────────┘          └──────────────────┘
+┌──────────────────┐
+│  Message Thread  │
+│  (GUI + Input)   │
+├──────────────────┤
+│ • KeyboardGUI    │
+│ • MIDIDisplay    │
+│ • KeyListener    │
+│ • MIDI Output    │
+└──────────────────┘
 ```
 
-**Note**: MIDI output is sent from message thread (safe for this use case).
-For production audio apps, consider thread-safe queuing if MIDI timing is critical.
+**Note**: This is a MIDI-only application with no audio processing. All operations occur 
+on the message thread for minimal latency. MIDI output uses `sendMessageNow()` for 
+immediate transmission without buffering or threading overhead.
 
 ## Configuration Loading (Future)
 

@@ -143,19 +143,28 @@ This is a JUCE project. To build:
 
 ## Technical Details
 
+### Low-Latency MIDI Architecture
+- **MIDI-only design**: No audio processing overhead
+- **Direct MIDI output**: Uses `sendMessageNow()` for immediate transmission
+- **Zero audio latency**: No audio device initialization or buffer delays
+- **Lightweight component**: Inherits from `juce::Component` (not `AudioAppComponent`)
+
 ### Key Press Handling
 - Uses JUCE's `KeyListener` interface
-- Prevents key repeat by tracking pressed keys
+- Prevents OS key repeat by tracking pressed keys
+- Immediate key-to-MIDI conversion with no buffering
 - Properly handles key release events
 - Case-insensitive letter key handling
 
 ### MIDI Generation
 - Uses JUCE's `MidiOutput` class
-- Real-time message sending
+- Real-time message sending with `sendMessageNow()`
 - Supports multiple simultaneous notes (chords)
 - Proper note-off messages for sustained playing
+- Direct hardware communication without queuing
 
 ### GUI Updates
+- Immediate visibility on startup (no loading delay)
 - Efficient repainting on key state changes
 - Component-based architecture
 - Responsive layout with resizable components
