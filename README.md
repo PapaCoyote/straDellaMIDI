@@ -10,12 +10,16 @@ The application maps computer keyboard keys to MIDI notes following a Stradella 
 #### Row 1: Numbers (1-0) - Minor Chords
 - Keys `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8`, `9`, `0`
 - Generate minor triads (root + minor third + perfect fifth)
-- Example: Key `4` = C Minor (C, Eb, G)
+- All notes in Octave 2 as per Stradella bass system
+- Cycle of fifths: Eb, Bb, F, C, G, D, A, E, B, F#
+- Example: Key `1` = Eb2 Minor (Eb, Gb, Bb), Key `4` = C2 Minor (C, Eb, G)
 
 #### Row 2: Top Letters (Q-P) - Major Chords
 - Keys `Q`, `W`, `E`, `R`, `T`, `Y`, `U`, `I`, `O`, `P`
 - Generate major triads (root + major third + perfect fifth)
-- Example: Key `R` = C Major (C, E, G)
+- All notes in Octave 2 as per Stradella bass system
+- Cycle of fifths: Eb, Bb, F, C, G, D, A, E, B, F#
+- Example: Key `Q` = Eb2 Major (Eb, G, Bb), Key `R` = C2 Major (C, E, G)
 
 #### Row 3: Home Row (A-;) - Single Notes (Cycle of Fifths)
 - Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`, `L`, `;`
@@ -88,10 +92,10 @@ The keyboard mapping can be customized through a configuration file:
 Example:
 ```
 # Single note
-S = 36      # C2
+F = 24      # C1
 
-# Major chord (C Major)
-W = 36,40,43    # C, E, G
+# Major chord (C2 Major)
+R = 36,40,43    # C, E, G
 ```
 
 ## Building the Application
