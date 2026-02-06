@@ -55,8 +55,8 @@ void KeyboardGUI::setupKeyLayout()
         keys.add(key);
     }
     
-    // Row 3: ASDF (A-') - Single notes (cycle of fifths)
-    juce::Array<int> row3Keys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'' };
+    // Row 3: ASDF (A-;) - Single notes (cycle of fifths)
+    juce::Array<int> row3Keys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';' };
     
     currentY += keyHeight + rowSpacing;
     startX = 100.0f;

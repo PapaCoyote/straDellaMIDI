@@ -5,12 +5,12 @@ MainComponent::MainComponent()
 {
     // Create GUI components - but initially hide them
     keyboardGUI = std::make_unique<KeyboardGUI>(keyboardMapper);
-    addAndMakeVisible(keyboardGUI.get());
     keyboardGUI->setVisible(false);  // Hide until audio is ready
+    addChildComponent(keyboardGUI.get());  // Use addChildComponent instead of addAndMakeVisible
     
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
-    addAndMakeVisible(midiDisplay.get());
     midiDisplay->setVisible(false);  // Hide until audio is ready
+    addChildComponent(midiDisplay.get());  // Use addChildComponent instead of addAndMakeVisible
     
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();

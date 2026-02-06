@@ -5,33 +5,32 @@
 # key_character = midi_notes (comma-separated for chords)
 # Lines starting with # are comments
 
-# Row 1: Single notes in cycle of fifths
-# F key = C2 (MIDI 36), each step in cycle of fifths is +/- 7 semitones
-# A(-21), S(-14), D(-7), F(0=C2), G(+7), H(+14), J(+21), K(+28), L(+35), ;(+42), '(+49)
-A = 15      # Eb0
+# Row 1: Single notes in cycle of fifths (all in Octave 1 per Stradella bass system)
+# F key = C1 (MIDI 24), arranged in cycle of fifths
+# A, S, D, F, G, H, J, K, L, ;
+A = 27      # Eb1
 S = 22      # Bb0  
 D = 29      # F1
-F = 36      # C2
-G = 43      # G2
-H = 50      # D3
-J = 57      # A3
-K = 64      # E4
-L = 71      # B4
-; = 78      # F#5
-' = 85      # C#6
+F = 24      # C1
+G = 31      # G1
+H = 26      # D1
+J = 33      # A1
+K = 28      # E1
+L = 35      # B1
+; = 30      # F#1
 
-# Row 2: Third notes (major third above single notes)
-# Each note is +4 semitones above the corresponding single note
-Z = 19      # G0  (third above Eb0)
+# Row 2: Third notes (major third above single notes, all in Octave 1)
+# Each note is +4 semitones above the corresponding single note (wrapping within octave)
+Z = 31      # G1  (third above Eb1)
 X = 26      # D1  (third above Bb0)
 C = 33      # A1  (third above F1)
-V = 40      # E2  (third above C2)
-B = 47      # B2  (third above G2)
-N = 54      # F#3 (third above D3)
-M = 61      # C#4 (third above A3)
-, = 68      # G#4 (third above E4)
-. = 75      # Eb5 (third above B4)
-/ = 82      # Bb5 (third above F#5)
+V = 28      # E1  (third above C1)
+B = 35      # B1  (third above G1)
+N = 30      # F#1 (third above D1)
+M = 25      # C#1 (third above A1)
+, = 32      # G#1 (third above E1)
+. = 27      # Eb1 (third above B1)
+/ = 34      # Bb1 (third above F#1)
 
 # Row 3: Major chords (root, major third, perfect fifth)
 # Extended cycle of fifths for 10 keys
