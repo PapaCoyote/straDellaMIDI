@@ -3,14 +3,12 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    // Create GUI components - but initially hide them
+    // Create GUI components - add as child components (invisible by default)
     keyboardGUI = std::make_unique<KeyboardGUI>(keyboardMapper);
-    addAndMakeVisible(keyboardGUI.get());
-    keyboardGUI->setVisible(false);  // Hide until audio is ready
+    addChildComponent(keyboardGUI.get());  // addChildComponent adds components as invisible
     
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
-    addAndMakeVisible(midiDisplay.get());
-    midiDisplay->setVisible(false);  // Hide until audio is ready
+    addChildComponent(midiDisplay.get());  // addChildComponent adds components as invisible
     
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();
@@ -46,6 +44,9 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
     }
+    
+    // Trigger initial paint to show loading message
+    repaint();
 }
 
 MainComponent::~MainComponent()
@@ -69,14 +70,21 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // For more details, see the help for AudioProcessor::prepareToPlay()
     
     // Mark audio as ready and show the GUI components
-    juce::MessageManager::callAsync([this]()
+    // Use a safe pointer to avoid issues if component is destroyed
+    juce::MessageManager::callAsync([safeThis = juce::Component::SafePointer<MainComponent>(this)]()
     {
-        isAudioReady = true;
-        if (keyboardGUI != nullptr)
-            keyboardGUI->setVisible(true);
-        if (midiDisplay != nullptr)
-            midiDisplay->setVisible(true);
-        repaint();
+        if (safeThis != nullptr)
+        {
+            safeThis->isAudioReady = true;
+            if (safeThis->keyboardGUI != nullptr)
+                safeThis->keyboardGUI->setVisible(true);
+            if (safeThis->midiDisplay != nullptr)
+                safeThis->midiDisplay->setVisible(true);
+            safeThis->repaint();
+            
+            // Ensure the component has keyboard focus
+            safeThis->grabKeyboardFocus();
+        }
     });
 }
 
