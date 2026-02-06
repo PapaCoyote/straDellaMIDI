@@ -2,7 +2,7 @@
 
 //==============================================================================
 MIDIMessageDisplay::MIDIMessageDisplay()
-    : expanded(true)
+    : expanded(true), needsUpdate(false)
 {
     // Setup message log
     addAndMakeVisible(messageLog);
@@ -20,49 +20,81 @@ MIDIMessageDisplay::MIDIMessageDisplay()
     toggleButton.setButtonText("MIDI Messages");
     toggleButton.onClick = [this]() { setExpanded(!expanded); };
     
+    // Start timer for async updates (30 FPS is plenty for a log display)
+    startTimer(33);
+    
     setSize(400, 150);
 }
 
 MIDIMessageDisplay::~MIDIMessageDisplay()
 {
+    stopTimer();
 }
 
 void MIDIMessageDisplay::addMidiMessage(const juce::MidiMessage& message)
 {
-    juce::String messageText;
+    // NON-BLOCKING: Just add to queue, process later on timer
+    const juce::ScopedLock lock(queueLock);
+    pendingMessages.add(message);
+    needsUpdate = true;
+}
+
+void MIDIMessageDisplay::processPendingMessages()
+{
+    juce::Array<juce::MidiMessage> messagesToProcess;
     
-    if (message.isNoteOn())
+    // Quickly grab pending messages under lock
     {
-        messageText = "Note ON:  " + StradellaKeyboardMapper::getMidiNoteName(message.getNoteNumber()) 
-                    + " (MIDI: " + juce::String(message.getNoteNumber()) + ")"
-                    + " Vel: " + juce::String(message.getVelocity());
+        const juce::ScopedLock lock(queueLock);
+        messagesToProcess.swapWith(pendingMessages);
+        needsUpdate = false;
     }
-    else if (message.isNoteOff())
+    
+    // Process messages without holding the lock
+    for (const auto& message : messagesToProcess)
     {
-        messageText = "Note OFF: " + StradellaKeyboardMapper::getMidiNoteName(message.getNoteNumber())
-                    + " (MIDI: " + juce::String(message.getNoteNumber()) + ")";
+        juce::String messageText;
+        
+        if (message.isNoteOn())
+        {
+            messageText = "Note ON:  " + StradellaKeyboardMapper::getMidiNoteName(message.getNoteNumber()) 
+                        + " (MIDI: " + juce::String(message.getNoteNumber()) + ")"
+                        + " Vel: " + juce::String(message.getVelocity());
+        }
+        else if (message.isNoteOff())
+        {
+            messageText = "Note OFF: " + StradellaKeyboardMapper::getMidiNoteName(message.getNoteNumber())
+                        + " (MIDI: " + juce::String(message.getNoteNumber()) + ")";
+        }
+        else
+        {
+            messageText = "MIDI: " + message.getDescription();
+        }
+        
+        // Add timestamp
+        auto now = juce::Time::getCurrentTime();
+        messageText = now.formatted("[%H:%M:%S] ") + messageText;
+        
+        messageHistory.add(messageText);
+        
+        // Keep only the last maxMessages
+        while (messageHistory.size() > maxMessages)
+            messageHistory.remove(0);
     }
-    else
-    {
-        messageText = "MIDI: " + message.getDescription();
-    }
     
-    // Add timestamp
-    auto now = juce::Time::getCurrentTime();
-    messageText = now.formatted("[%H:%M:%S] ") + messageText;
-    
-    messageHistory.add(messageText);
-    
-    // Keep only the last maxMessages
-    while (messageHistory.size() > maxMessages)
-        messageHistory.remove(0);
-    
-    updateMessageDisplay();
+    // Update display once for all messages
+    if (messagesToProcess.size() > 0)
+        updateMessageDisplay();
 }
 
 void MIDIMessageDisplay::clearMessages()
 {
-    messageHistory.clear();
+    {
+        const juce::ScopedLock lock(queueLock);
+        pendingMessages.clear();
+        messageHistory.clear();
+    }
+    // Update display immediately (outside lock) to show cleared state
     updateMessageDisplay();
 }
 
@@ -88,6 +120,13 @@ void MIDIMessageDisplay::updateMessageDisplay()
     messageLog.moveCaretToEnd();
 }
 
+void MIDIMessageDisplay::timerCallback()
+{
+    // Process any pending messages asynchronously
+    if (needsUpdate)
+        processPendingMessages();
+}
+
 void MIDIMessageDisplay::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::darkgrey);
@@ -110,9 +149,4 @@ void MIDIMessageDisplay::resized()
 void MIDIMessageDisplay::mouseDown(const juce::MouseEvent& event)
 {
     // Allow dragging to resize if needed in the future
-}
-
-void MIDIMessageDisplay::timerCallback()
-{
-    // Reserved for future use (e.g., auto-scrolling, fading old messages)
 }

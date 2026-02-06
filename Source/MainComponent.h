@@ -10,7 +10,7 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent  : public juce::AudioAppComponent,
+class MainComponent  : public juce::Component,
                        private juce::KeyListener
 {
 public:
@@ -19,13 +19,9 @@ public:
     ~MainComponent() override;
 
     //==============================================================================
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill) override;
-    void releaseResources() override;
-
-    //==============================================================================
     void paint (juce::Graphics& g) override;
     void resized() override;
+    void visibilityChanged() override;
     
     //==============================================================================
     // KeyListener interface
@@ -44,9 +40,6 @@ private:
     
     // Track currently pressed keys
     juce::Array<int> currentlyPressedKeys;
-    
-    // Loading state
-    bool isAudioReady = false;
     
     void sendMidiMessage(const juce::MidiMessage& message);
     void handleKeyPress(int keyCode);

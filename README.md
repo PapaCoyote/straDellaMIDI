@@ -2,6 +2,16 @@
 
 A JUCE-based application that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output.
 
+## 🎯 Optimized for Low Latency
+
+This application is designed for **real-time MIDI output with minimal latency**:
+- **Simultaneous chord playback** - all notes trigger within microseconds
+- **Zero buffering** - immediate response to rapid key presses  
+- **MIDI-only architecture** - no audio processing overhead
+- **Asynchronous GUI** - display updates never block MIDI output
+
+See [LATENCY_IMPROVEMENTS.md](LATENCY_IMPROVEMENTS.md) and [ASYNC_MESSAGE_DISPLAY.md](ASYNC_MESSAGE_DISPLAY.md) for technical details.
+
 ## Features
 
 ### Keyboard Mapping
@@ -124,15 +134,24 @@ This is a JUCE project. To build:
 
 1. Launch the application
 2. Ensure a MIDI output device is available
-3. Click on the application window to give it keyboard focus
+3. The application automatically grabs keyboard focus - just start playing!
 4. Press keys to generate MIDI notes:
    - Single notes: A, S, D, F, G, H, J, K, L, ;
    - Third intervals: Z, X, C, V, B, N, M, ,, ., /
    - Major chords: Q, W, E, R, T, Y, U, I, O, P
    - Minor chords: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
 5. Watch the visual feedback on the keyboard display
-6. Monitor MIDI messages in the bottom panel
+6. Monitor MIDI messages in the bottom panel (updates asynchronously)
 7. Click "MIDI Messages" button to collapse/expand the message log
+
+**Note**: If keys don't respond, click the application window to ensure it has focus.
+
+## Testing
+
+See [TESTING_GUIDE.md](TESTING_GUIDE.md) for comprehensive testing instructions including:
+- Chord simultaneity verification
+- Rapid input testing
+- Latency measurement with MIDI monitoring software
 
 ## MIDI Output
 
@@ -143,19 +162,28 @@ This is a JUCE project. To build:
 
 ## Technical Details
 
+### Low-Latency MIDI Architecture
+- **MIDI-only design**: No audio processing overhead
+- **Direct MIDI output**: Uses `sendMessageNow()` for immediate transmission
+- **Zero audio latency**: No audio device initialization or buffer delays
+- **Lightweight component**: Inherits from `juce::Component` (not `AudioAppComponent`)
+
 ### Key Press Handling
 - Uses JUCE's `KeyListener` interface
-- Prevents key repeat by tracking pressed keys
+- Prevents OS key repeat by tracking pressed keys
+- Immediate key-to-MIDI conversion with no buffering
 - Properly handles key release events
 - Case-insensitive letter key handling
 
 ### MIDI Generation
 - Uses JUCE's `MidiOutput` class
-- Real-time message sending
+- Real-time message sending with `sendMessageNow()`
 - Supports multiple simultaneous notes (chords)
 - Proper note-off messages for sustained playing
+- Direct hardware communication without queuing
 
 ### GUI Updates
+- Immediate visibility on startup (no loading delay)
 - Efficient repainting on key state changes
 - Component-based architecture
 - Responsive layout with resizable components
