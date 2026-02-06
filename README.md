@@ -17,17 +17,18 @@ The application maps computer keyboard keys to MIDI notes following a Stradella 
 - Generate major triads (root + major third + perfect fifth)
 - Example: Key `R` = C Major (C, E, G)
 
-#### Row 3: Home Row (A-') - Single Notes (Cycle of Fifths)
-- Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`, `L`, `;`, `'`
+#### Row 3: Home Row (A-;) - Single Notes (Cycle of Fifths)
+- Keys `A`, `S`, `D`, `F`, `G`, `H`, `J`, `K`, `L`, `;`
 - Generate single notes arranged in a cycle of fifths
-- Key `F` = C2 (MIDI note 36)
-- Each step in the cycle of fifths moves 7 semitones (a perfect fifth)
-- Full mapping: A=Eb0, S=Bb0, D=F1, F=C2, G=G2, H=D3, J=A3, K=E4, L=B4, ;=F#5, '=C#6
+- Key `F` = C1 (MIDI note 24)
+- All notes in Octave 1 as per Stradella bass system
+- Full mapping: A=Eb1, S=Bb0, D=F1, F=C1, G=G1, H=D1, J=A1, K=E1, L=B1, ;=F#1
 
 #### Row 4: Bottom Row (Z-/) - Third Intervals
 - Keys `Z`, `X`, `C`, `V`, `B`, `N`, `M`, `,`, `.`, `/`
 - Generate notes a major third (4 semitones) above the corresponding single notes
-- Example: Key `V` = E2 (third above C2 which is the F key)
+- All notes in Octave 1 as per Stradella bass system
+- Example: Key `V` = E1 (third above C1 which is the F key)
 
 ### Visual Interface
 
@@ -121,7 +122,7 @@ This is a JUCE project. To build:
 2. Ensure a MIDI output device is available
 3. Click on the application window to give it keyboard focus
 4. Press keys to generate MIDI notes:
-   - Single notes: A, S, D, F, G, H, J, K, L, ;, '
+   - Single notes: A, S, D, F, G, H, J, K, L, ;
    - Third intervals: Z, X, C, V, B, N, M, ,, ., /
    - Major chords: Q, W, E, R, T, Y, U, I, O, P
    - Minor chords: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
