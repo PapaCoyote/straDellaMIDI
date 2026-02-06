@@ -3,12 +3,14 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    // Create GUI components
+    // Create GUI components - but initially hide them
     keyboardGUI = std::make_unique<KeyboardGUI>(keyboardMapper);
     addAndMakeVisible(keyboardGUI.get());
+    keyboardGUI->setVisible(false);  // Hide until audio is ready
     
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
     addAndMakeVisible(midiDisplay.get());
+    midiDisplay->setVisible(false);  // Hide until audio is ready
     
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();
@@ -65,6 +67,17 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
     // but be careful - it will be called on the audio thread, not the GUI thread.
 
     // For more details, see the help for AudioProcessor::prepareToPlay()
+    
+    // Mark audio as ready and show the GUI components
+    juce::MessageManager::callAsync([this]()
+    {
+        isAudioReady = true;
+        if (keyboardGUI != nullptr)
+            keyboardGUI->setVisible(true);
+        if (midiDisplay != nullptr)
+            midiDisplay->setVisible(true);
+        repaint();
+    });
 }
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
@@ -92,7 +105,13 @@ void MainComponent::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
-    // You can add your drawing code here!
+    // Show loading message if audio is not ready
+    if (!isAudioReady)
+    {
+        g.setColour(juce::Colours::white);
+        g.setFont(32.0f);
+        g.drawText("Loading...", getLocalBounds(), juce::Justification::centred);
+    }
 }
 
 void MainComponent::resized()

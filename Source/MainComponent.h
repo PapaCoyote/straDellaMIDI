@@ -45,6 +45,9 @@ private:
     // Track currently pressed keys
     juce::Array<int> currentlyPressedKeys;
     
+    // Loading state
+    bool isAudioReady = false;
+    
     void sendMidiMessage(const juce::MidiMessage& message);
     void handleKeyPress(int keyCode);
     void handleKeyRelease(int keyCode);
