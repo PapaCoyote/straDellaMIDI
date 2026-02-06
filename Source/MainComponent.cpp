@@ -44,6 +44,9 @@ MainComponent::MainComponent()
         // Specify the number of input and output channels that we want to open
         setAudioChannels (2, 2);
     }
+    
+    // Trigger initial paint to show loading message
+    repaint();
 }
 
 MainComponent::~MainComponent()
@@ -78,6 +81,9 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
             if (safeThis->midiDisplay != nullptr)
                 safeThis->midiDisplay->setVisible(true);
             safeThis->repaint();
+            
+            // Ensure the component has keyboard focus
+            safeThis->grabKeyboardFocus();
         }
     });
 }
