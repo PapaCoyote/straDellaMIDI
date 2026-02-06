@@ -125,20 +125,29 @@ void MainComponent::handleKeyPress(int keyCode)
     
     if (isValidKey && !midiNotes.isEmpty())
     {
-        // Update GUI
-        if (keyboardGUI != nullptr)
-            keyboardGUI->setKeyPressed(keyCode, true);
-        
-        // Send MIDI note on messages
+        // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
             auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
             sendMidiMessage(message);
-            
-            // Display in MIDI log
-            if (midiDisplay != nullptr)
-                midiDisplay->addMidiMessage(message);
         }
+        
+        // NON-CRITICAL: Update GUI asynchronously (won't block MIDI)
+        juce::MessageManager::callAsync([this, keyCode, midiNotes]()
+        {
+            if (keyboardGUI != nullptr)
+                keyboardGUI->setKeyPressed(keyCode, true);
+            
+            // Log messages asynchronously (now non-blocking with queue)
+            if (midiDisplay != nullptr)
+            {
+                for (int noteNumber : midiNotes)
+                {
+                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+                    midiDisplay->addMidiMessage(message);
+                }
+            }
+        });
     }
 }
 
@@ -149,20 +158,29 @@ void MainComponent::handleKeyRelease(int keyCode)
     
     if (isValidKey && !midiNotes.isEmpty())
     {
-        // Update GUI
-        if (keyboardGUI != nullptr)
-            keyboardGUI->setKeyPressed(keyCode, false);
-        
-        // Send MIDI note off messages
+        // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
             auto message = juce::MidiMessage::noteOff(1, noteNumber);
             sendMidiMessage(message);
-            
-            // Display in MIDI log
-            if (midiDisplay != nullptr)
-                midiDisplay->addMidiMessage(message);
         }
+        
+        // NON-CRITICAL: Update GUI asynchronously (won't block MIDI)
+        juce::MessageManager::callAsync([this, keyCode, midiNotes]()
+        {
+            if (keyboardGUI != nullptr)
+                keyboardGUI->setKeyPressed(keyCode, false);
+            
+            // Log messages asynchronously (now non-blocking with queue)
+            if (midiDisplay != nullptr)
+            {
+                for (int noteNumber : midiNotes)
+                {
+                    auto message = juce::MidiMessage::noteOff(1, noteNumber);
+                    midiDisplay->addMidiMessage(message);
+                }
+            }
+        });
     }
 }
 

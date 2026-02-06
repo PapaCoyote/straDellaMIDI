@@ -6,6 +6,7 @@
 //==============================================================================
 /**
     A component that displays MIDI messages in real-time with collapsible functionality.
+    Uses asynchronous updates to avoid blocking MIDI output.
 */
 class MIDIMessageDisplay : public juce::Component,
                            private juce::Timer
@@ -14,7 +15,7 @@ public:
     MIDIMessageDisplay();
     ~MIDIMessageDisplay() override;
     
-    /** Adds a MIDI message to the display */
+    /** Adds a MIDI message to the display (non-blocking, queued for async update) */
     void addMidiMessage(const juce::MidiMessage& message);
     
     /** Clears all messages */
@@ -36,10 +37,14 @@ private:
     bool expanded;
     
     juce::StringArray messageHistory;
+    juce::CriticalSection queueLock;
+    juce::Array<juce::MidiMessage> pendingMessages;
     static constexpr int maxMessages = 100;
+    bool needsUpdate;
     
     void timerCallback() override;
     void updateMessageDisplay();
+    void processPendingMessages();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MIDIMessageDisplay)
 };
