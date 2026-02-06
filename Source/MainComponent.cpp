@@ -71,6 +71,16 @@ void MainComponent::resized()
     }
 }
 
+void MainComponent::visibilityChanged()
+{
+    // Ensure keyboard focus when component becomes visible
+    // This handles cases where grabKeyboardFocus() in constructor fails
+    if (isVisible() && isShowing())
+    {
+        grabKeyboardFocus();
+    }
+}
+
 bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* originatingComponent)
 {
     int keyCode = key.getKeyCode();
