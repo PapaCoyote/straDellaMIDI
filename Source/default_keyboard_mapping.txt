@@ -33,27 +33,29 @@ M = 25      # C#1 (third above A1, wraps to octave 1)
 / = 34      # Bb1 (third above F#1)
 
 # Row 3: Major chords (root, major third, perfect fifth)
-# Extended cycle of fifths for 10 keys
-Q = 20,24,27     # Ab1 Major
-W = 27,31,34     # Eb1 Major
-E = 34,38,41     # Bb1 Major
-R = 41,45,48     # F2 Major
-T = 48,52,55     # C3 Major
-Y = 55,59,62     # G3 Major
-U = 62,66,69     # D4 Major
-I = 69,73,76     # A4 Major
-O = 76,80,83     # E5 Major
-P = 83,87,90     # B5 Major
+# All notes in Octave 2 (MIDI 36-47) as per Stradella bass system
+# Cycle of fifths starting from Eb: Eb, Bb, F, C, G, D, A, E, B, F#
+Q = 39,43,46     # Eb2 Major (D#2 Major)
+W = 46,50,53     # Bb2 Major (A#2 Major)
+E = 41,45,48     # F2 Major
+R = 36,40,43     # C2 Major
+T = 43,47,50     # G2 Major
+Y = 38,42,45     # D2 Major
+U = 45,49,52     # A2 Major
+I = 40,44,47     # E2 Major
+O = 47,51,54     # B2 Major
+P = 42,46,49     # F#2 Major
 
 # Row 4: Minor chords (root, minor third, perfect fifth)
-# Same root notes as A-G keys (rows 1), but with minor third
-1 = 27,30,34     # Eb1 Minor
-2 = 34,37,41     # Bb1 Minor
+# All notes in Octave 2 (MIDI 36-47) as per Stradella bass system
+# Cycle of fifths starting from Eb: Eb, Bb, F, C, G, D, A, E, B, F#
+1 = 39,42,46     # Eb2 Minor (D#2 Minor)
+2 = 46,49,53     # Bb2 Minor (A#2 Minor)
 3 = 41,44,48     # F2 Minor
-4 = 48,51,55     # C3 Minor
-5 = 55,58,62     # G3 Minor
-6 = 62,65,69     # D4 Minor
-7 = 69,72,76     # A4 Minor
-8 = 76,79,83     # E5 Minor
-9 = 83,86,90     # B5 Minor
-0 = 90,93,97     # F#6 Minor
+4 = 36,39,43     # C2 Minor
+5 = 43,46,50     # G2 Minor
+6 = 38,41,45     # D2 Minor
+7 = 45,48,52     # A2 Minor
+8 = 40,43,47     # E2 Minor
+9 = 47,50,54     # B2 Minor
+0 = 42,45,49     # F#2 Minor

@@ -61,17 +61,17 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     
     // Row 3: Major triads (q,w,e,r,t,y,u,i,o,p)
     // Major triad: root, major third (+4), perfect fifth (+7)
-    // Using the same cycle of fifths pattern
-    // Shifted up one octave (+12 semitones)
+    // All notes in Octave 2 (MIDI 36-47) as per Stradella bass system
+    // Cycle of fifths starting from Eb: Eb, Bb, F, C, G, D, A, E, B, F#
     juce::Array<int> majorChordKeys = { 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P' };
-    juce::Array<int> majorChordOffsets = { -28, -21, -14, -7, 0, 7, 14, 21, 28, 35 }; // Extended cycle
+    juce::Array<int> majorChordRoots = { 39, 46, 41, 36, 43, 38, 45, 40, 47, 42 }; // Eb2, Bb2, F2, C2, G2, D2, A2, E2, B2, F#2
     
-    for (int i = 0; i < majorChordKeys.size() && i < majorChordOffsets.size(); ++i)
+    for (int i = 0; i < majorChordKeys.size() && i < majorChordRoots.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = majorChordKeys[i];
         mapping.type = KeyType::MajorChord;
-        int root = fKeyNote + majorChordOffsets[i] + 12; // +12 for one octave up
+        int root = majorChordRoots[i];
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 4);    // Major third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
@@ -81,16 +81,17 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     
     // Row 4: Minor triads (1,2,3,4,5,6,7,8,9,0)
     // Minor triad: root, minor third (+3), perfect fifth (+7)
-    // Shifted up one octave (+12 semitones)
+    // All notes in Octave 2 (MIDI 36-47) as per Stradella bass system
+    // Cycle of fifths starting from Eb: Eb, Bb, F, C, G, D, A, E, B, F#
     juce::Array<int> minorChordKeys = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-    juce::Array<int> minorChordOffsets = { -21, -14, -7, 0, 7, 14, 21, 28, 35, 42 }; // Extended cycle of fifths
+    juce::Array<int> minorChordRoots = { 39, 46, 41, 36, 43, 38, 45, 40, 47, 42 }; // Eb2, Bb2, F2, C2, G2, D2, A2, E2, B2, F#2
     
-    for (int i = 0; i < minorChordKeys.size() && i < minorChordOffsets.size(); ++i)
+    for (int i = 0; i < minorChordKeys.size() && i < minorChordRoots.size(); ++i)
     {
         KeyMapping mapping;
         mapping.keyCode = minorChordKeys[i];
         mapping.type = KeyType::MinorChord;
-        int root = fKeyNote + minorChordOffsets[i] + 12; // +12 for one octave up
+        int root = minorChordRoots[i];
         mapping.midiNotes.add(root);        // Root
         mapping.midiNotes.add(root + 3);    // Minor third
         mapping.midiNotes.add(root + 7);    // Perfect fifth
