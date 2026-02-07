@@ -6,7 +6,7 @@
 //==============================================================================
 /**
     Settings window for configuring mouse MIDI expression behavior.
-    Allows user to enable/disable CC7 and CC11, and select curve type.
+    Allows user to enable/disable CC1 and CC11, and select curve type.
 */
 class MouseMidiSettingsWindow : public juce::Component
 {
@@ -25,8 +25,8 @@ private:
     // UI Components
     juce::Label titleLabel;
     
-    juce::ToggleButton volumeCheckbox;
-    juce::Label volumeLabel;
+    juce::ToggleButton modulationCheckbox;
+    juce::Label modulationLabel;
     
     juce::ToggleButton expressionCheckbox;
     juce::Label expressionLabel;

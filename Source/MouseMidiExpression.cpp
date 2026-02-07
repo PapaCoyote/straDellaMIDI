@@ -3,84 +3,73 @@
 //==============================================================================
 MouseMidiExpression::MouseMidiExpression()
 {
-    // Enable mouse events and set cursor
-    setMouseCursor(juce::MouseCursor::CrosshairCursor);
-    
     // Initialize positions
-    lastMousePosition = juce::Point<float>(0.0f, 0.0f);
-    currentMousePosition = juce::Point<float>(0.0f, 0.0f);
+    lastMousePosition = juce::Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt();
+    currentMousePosition = lastMousePosition;
     lastMouseTime = juce::Time::currentTimeMillis();
+    
+    // Get desktop bounds for expression calculation
+    screenBounds = juce::Desktop::getInstance().getDisplays().getPrimaryDisplay()->totalArea;
 }
 
 MouseMidiExpression::~MouseMidiExpression()
 {
+    stopTracking();
 }
 
-//==============================================================================
-void MouseMidiExpression::paint(juce::Graphics& g)
+void MouseMidiExpression::startTracking()
 {
-    // Draw a subtle background to indicate the active area
-    g.fillAll(juce::Colours::black.withAlpha(0.05f));
-    
-    // Draw border
-    g.setColour(juce::Colours::grey.withAlpha(0.3f));
-    g.drawRect(getLocalBounds(), 1);
-    
-    // Draw crosshair at current mouse position if within bounds
-    if (getLocalBounds().toFloat().contains(currentMousePosition))
+    // Get the desktop component for global mouse tracking
+    desktopComponent = &juce::Desktop::getInstance().getComponent(0);
+    if (desktopComponent != nullptr)
     {
-        g.setColour(juce::Colours::lightblue.withAlpha(0.5f));
-        
-        // Vertical line
-        g.drawLine(currentMousePosition.x, 0.0f, 
-                   currentMousePosition.x, (float)getHeight(), 1.0f);
-        
-        // Horizontal line
-        g.drawLine(0.0f, currentMousePosition.y, 
-                   (float)getWidth(), currentMousePosition.y, 1.0f);
+        desktopComponent->addMouseListener(this, true);
     }
     
-    // Draw info text
-    g.setColour(juce::Colours::white.withAlpha(0.7f));
-    g.setFont(12.0f);
-    
-    juce::String infoText = "Mouse MIDI Expression: ";
-    if (volumeEnabled && expressionEnabled)
-        infoText += "CC7 (Volume) + CC11 (Expression)";
-    else if (volumeEnabled)
-        infoText += "CC7 (Volume) only";
-    else if (expressionEnabled)
-        infoText += "CC11 (Expression) only";
-    else
-        infoText += "Disabled";
-    
-    g.drawText(infoText, getLocalBounds().reduced(5), 
-               juce::Justification::topLeft, true);
+    // Start timer to poll mouse position (fallback for global tracking)
+    startTimer(16); // ~60 Hz polling
 }
 
-void MouseMidiExpression::resized()
+void MouseMidiExpression::stopTracking()
 {
-    // Component has been resized
+    stopTimer();
+    
+    if (desktopComponent != nullptr)
+    {
+        desktopComponent->removeMouseListener(this);
+        desktopComponent = nullptr;
+    }
+}
+
+void MouseMidiExpression::timerCallback()
+{
+    // Poll mouse position globally
+    auto mousePos = juce::Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt();
+    
+    // Only process if position changed
+    if (mousePos != currentMousePosition)
+    {
+        processMouseMovement(mousePos);
+    }
 }
 
 //==============================================================================
 void MouseMidiExpression::mouseMove(const juce::MouseEvent& event)
 {
-    // Handle movement
-    processMouseMovement(event);
+    processMouseMovement(event.getScreenPosition().toInt());
 }
 
 void MouseMidiExpression::mouseDrag(const juce::MouseEvent& event)
 {
-    // Handle dragging
-    processMouseMovement(event);
+    processMouseMovement(event.getScreenPosition().toInt());
 }
 
 void MouseMidiExpression::mouseDown(const juce::MouseEvent& event)
 {
     // Reset tracking when mouse is pressed
-    lastMousePosition = event.position;
-    currentMousePosition = event.position;
+    auto pos = event.getScreenPosition().toInt();
+    lastMousePosition = pos;
+    currentMousePosition = pos;
     lastMouseTime = juce::Time::currentTimeMillis();
 }
 
@@ -90,9 +79,9 @@ void MouseMidiExpression::mouseUp(const juce::MouseEvent& event)
 }
 
 //==============================================================================
-void MouseMidiExpression::processMouseMovement(const juce::MouseEvent& event)
+void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
 {
-    currentMousePosition = event.position;
+    currentMousePosition = mousePos;
     juce::int64 currentTime = juce::Time::currentTimeMillis();
     juce::int64 timeDelta = currentTime - lastMouseTime;
     
@@ -100,8 +89,8 @@ void MouseMidiExpression::processMouseMovement(const juce::MouseEvent& event)
     if (timeDelta <= 0)
         timeDelta = 1;
     
-    // Calculate velocity from mouse movement (for CC7 - Volume)
-    if (volumeEnabled)
+    // Calculate velocity from mouse movement (for CC1 - Modulation Wheel)
+    if (modulationEnabled)
     {
         float velocity = calculateVelocity(lastMousePosition, currentMousePosition, timeDelta);
         
@@ -115,22 +104,25 @@ void MouseMidiExpression::processMouseMovement(const juce::MouseEvent& event)
         int midiValue = (int)(curvedValue * 127.0f);
         
         // Only send if value changed significantly
-        if (std::abs(midiValue - lastVolumeValue) >= 1)
+        if (std::abs(midiValue - lastModulationValue) >= 1)
         {
-            sendVolumeCC(midiValue);
-            lastVolumeValue = midiValue;
+            sendModulationCC(midiValue);
+            lastModulationValue = midiValue;
         }
     }
     
     // Calculate expression from Y position (for CC11 - Expression)
     if (expressionEnabled)
     {
-        float height = (float)getHeight();
+        float height = (float)screenBounds.getHeight();
         if (height > 0)
         {
+            // Y position relative to screen
+            float relativeY = currentMousePosition.y - screenBounds.getY();
+            
             // Y position: top = 0 (high expression), bottom = max (low expression)
             // Invert so that top = high value, bottom = low value
-            float normalizedY = 1.0f - (currentMousePosition.y / height);
+            float normalizedY = 1.0f - (relativeY / height);
             normalizedY = juce::jlimit(0.0f, 1.0f, normalizedY);
             
             // Apply curve
@@ -151,18 +143,15 @@ void MouseMidiExpression::processMouseMovement(const juce::MouseEvent& event)
     // Update tracking variables
     lastMousePosition = currentMousePosition;
     lastMouseTime = currentTime;
-    
-    // Request repaint to update crosshair
-    repaint();
 }
 
-float MouseMidiExpression::calculateVelocity(const juce::Point<float>& from, 
-                                             const juce::Point<float>& to, 
+float MouseMidiExpression::calculateVelocity(const juce::Point<int>& from, 
+                                             const juce::Point<int>& to, 
                                              juce::int64 timeDelta)
 {
     // Calculate distance moved
-    float dx = to.x - from.x;
-    float dy = to.y - from.y;
+    float dx = (float)(to.x - from.x);
+    float dy = (float)(to.y - from.y);
     float distance = std::sqrt(dx * dx + dy * dy);
     
     // Calculate velocity in pixels per second
@@ -195,13 +184,14 @@ float MouseMidiExpression::applyCurve(float normalizedValue) const
     }
 }
 
-void MouseMidiExpression::sendVolumeCC(int value)
+void MouseMidiExpression::sendModulationCC(int value)
 {
     value = juce::jlimit(0, 127, value);
     
     if (onMidiMessage)
     {
-        auto message = juce::MidiMessage::controllerEvent(1, 7, value);  // CC7 = Volume
+        // CC1 = Modulation Wheel, using channel 1 (MIDI channels are 1-based in the API)
+        auto message = juce::MidiMessage::controllerEvent(1, 1, value);
         onMidiMessage(message);
     }
 }
@@ -212,7 +202,8 @@ void MouseMidiExpression::sendExpressionCC(int value)
     
     if (onMidiMessage)
     {
-        auto message = juce::MidiMessage::controllerEvent(1, 11, value);  // CC11 = Expression
+        // CC11 = Expression, using channel 1 (MIDI channels are 1-based in the API)
+        auto message = juce::MidiMessage::controllerEvent(1, 11, value);
         onMidiMessage(message);
     }
 }

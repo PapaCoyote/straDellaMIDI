@@ -21,16 +21,16 @@ void MouseMidiSettingsWindow::setupUI()
     titleLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(titleLabel);
     
-    // CC7 (Volume) checkbox
-    volumeLabel.setText("CC7 (Volume) - Mouse Velocity:", juce::dontSendNotification);
-    addAndMakeVisible(volumeLabel);
+    // CC1 (Modulation Wheel) checkbox
+    modulationLabel.setText("CC1 (Modulation Wheel) - Mouse Velocity:", juce::dontSendNotification);
+    addAndMakeVisible(modulationLabel);
     
-    volumeCheckbox.setToggleState(mouseMidiExpression.isVolumeEnabled(), juce::dontSendNotification);
-    volumeCheckbox.onClick = [this]
+    modulationCheckbox.setToggleState(mouseMidiExpression.isModulationEnabled(), juce::dontSendNotification);
+    modulationCheckbox.onClick = [this]
     {
-        mouseMidiExpression.setVolumeEnabled(volumeCheckbox.getToggleState());
+        mouseMidiExpression.setModulationEnabled(modulationCheckbox.getToggleState());
     };
-    addAndMakeVisible(volumeCheckbox);
+    addAndMakeVisible(modulationCheckbox);
     
     // CC11 (Expression) checkbox
     expressionLabel.setText("CC11 (Expression) - Y Position:", juce::dontSendNotification);
@@ -108,9 +108,10 @@ void MouseMidiSettingsWindow::paint(juce::Graphics& g)
     
     juce::String infoText = 
         "Configure how mouse movement affects MIDI expression.\n\n"
-        "CC7 (Volume): Controlled by mouse movement speed\n"
+        "CC1 (Modulation): Controlled by mouse movement speed\n"
         "CC11 (Expression): Controlled by mouse Y position\n\n"
-        "Curve affects how values respond to input.";
+        "Curve affects how values respond to input.\n\n"
+        "Mouse tracking is global across entire desktop.";
     
     auto infoArea = getLocalBounds().reduced(20);
     infoArea.removeFromTop(180);
@@ -127,10 +128,10 @@ void MouseMidiSettingsWindow::resized()
     titleLabel.setBounds(area.removeFromTop(30));
     area.removeFromTop(10);
     
-    // CC7 Volume setting
-    auto volumeArea = area.removeFromTop(25);
-    volumeCheckbox.setBounds(volumeArea.removeFromLeft(25));
-    volumeLabel.setBounds(volumeArea);
+    // CC1 Modulation setting
+    auto modulationArea = area.removeFromTop(25);
+    modulationCheckbox.setBounds(modulationArea.removeFromLeft(25));
+    modulationLabel.setBounds(modulationArea);
     area.removeFromTop(10);
     
     // CC11 Expression setting

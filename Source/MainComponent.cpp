@@ -10,7 +10,7 @@ MainComponent::MainComponent()
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
     addAndMakeVisible(midiDisplay.get());
     
-    // Create mouse MIDI expression component
+    // Create mouse MIDI expression component (no visual component needed)
     mouseMidiExpression = std::make_unique<MouseMidiExpression>();
     mouseMidiExpression->onMidiMessage = [this](const juce::MidiMessage& msg)
     {
@@ -23,7 +23,8 @@ MainComponent::MainComponent()
                 midiDisplay->addMidiMessage(msg);
         });
     };
-    addAndMakeVisible(mouseMidiExpression.get());
+    // Start global mouse tracking
+    mouseMidiExpression->startTracking();
     
     // Create mouse settings window (initially hidden)
     mouseSettingsWindow = std::make_unique<MouseMidiSettingsWindow>(*mouseMidiExpression);
@@ -93,16 +94,7 @@ void MainComponent::resized()
         midiDisplay->setBounds(midiArea);
     }
     
-    // Split remaining space: keyboard on left, mouse expression on right
-    auto mouseArea = area.removeFromRight(200);
-    
-    // Mouse MIDI expression area
-    if (mouseMidiExpression != nullptr)
-    {
-        mouseMidiExpression->setBounds(mouseArea);
-    }
-    
-    // Keyboard GUI takes the remaining space
+    // Keyboard GUI takes the full remaining space
     if (keyboardGUI != nullptr)
     {
         keyboardGUI->setBounds(area);
