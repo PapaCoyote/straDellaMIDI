@@ -8,8 +8,7 @@
     - Mouse velocity affects CC7 (Volume)
     - Mouse Y position affects CC11 (Expression)
 */
-class MouseMidiExpression : public juce::Component,
-                            private juce::MouseListener
+class MouseMidiExpression : public juce::Component
 {
 public:
     //==============================================================================
@@ -52,7 +51,7 @@ public:
 
 private:
     //==============================================================================
-    // MouseListener interface
+    // Component mouse event overrides
     void mouseMove(const juce::MouseEvent& event) override;
     void mouseDrag(const juce::MouseEvent& event) override;
     void mouseDown(const juce::MouseEvent& event) override;

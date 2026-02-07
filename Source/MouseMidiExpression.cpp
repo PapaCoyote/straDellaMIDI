@@ -3,9 +3,8 @@
 //==============================================================================
 MouseMidiExpression::MouseMidiExpression()
 {
-    // Enable mouse events
+    // Enable mouse events and set cursor
     setMouseCursor(juce::MouseCursor::CrosshairCursor);
-    addMouseListener(this, true);
     
     // Initialize positions
     lastMousePosition = juce::Point<float>(0.0f, 0.0f);
@@ -15,7 +14,6 @@ MouseMidiExpression::MouseMidiExpression()
 
 MouseMidiExpression::~MouseMidiExpression()
 {
-    removeMouseListener(this);
 }
 
 //==============================================================================
