@@ -20,6 +20,14 @@
             file="Source/MIDIMessageDisplay.h"/>
       <FILE id="mmsg02" name="MIDIMessageDisplay.cpp" compile="1" resource="0"
             file="Source/MIDIMessageDisplay.cpp"/>
+      <FILE id="mmexp1" name="MouseMidiExpression.h" compile="0" resource="0"
+            file="Source/MouseMidiExpression.h"/>
+      <FILE id="mmexp2" name="MouseMidiExpression.cpp" compile="1" resource="0"
+            file="Source/MouseMidiExpression.cpp"/>
+      <FILE id="mmset1" name="MouseMidiSettingsWindow.h" compile="0" resource="0"
+            file="Source/MouseMidiSettingsWindow.h"/>
+      <FILE id="mmset2" name="MouseMidiSettingsWindow.cpp" compile="1" resource="0"
+            file="Source/MouseMidiSettingsWindow.cpp"/>
       <FILE id="conf01" name="default_keyboard_mapping.txt" compile="0" resource="1"
             file="Source/default_keyboard_mapping.txt"/>
     </GROUP>
