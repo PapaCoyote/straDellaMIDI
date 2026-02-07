@@ -14,6 +14,15 @@ See [LATENCY_IMPROVEMENTS.md](LATENCY_IMPROVEMENTS.md) and [ASYNC_MESSAGE_DISPLA
 
 ## Features
 
+### Mouse MIDI Expression (NEW!)
+Emulates accordion bellows using mouse movement for expressive control:
+- **CC7 (Volume)**: Controlled by mouse movement velocity
+- **CC11 (Expression)**: Controlled by mouse Y position
+- **Configurable curves**: Linear, Exponential, or Logarithmic response
+- **Settings window**: Easy configuration via "Mouse Settings" button
+
+See [MOUSE_MIDI_EXPRESSION.md](MOUSE_MIDI_EXPRESSION.md) for detailed documentation.
+
 ### Keyboard Mapping
 The application maps computer keyboard keys to MIDI notes following a Stradella accordion layout:
 
