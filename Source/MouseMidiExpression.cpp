@@ -107,9 +107,8 @@ void MouseMidiExpression::processMouseMovement(const juce::MouseEvent& event)
     {
         float velocity = calculateVelocity(lastMousePosition, currentMousePosition, timeDelta);
         
-        // Normalize velocity to 0.0 - 1.0 range
-        // Typical mouse velocity might be 0-2000 pixels/second, so we scale accordingly
-        float normalizedVelocity = juce::jlimit(0.0f, 1.0f, velocity / 2000.0f);
+        // Normalize velocity to 0.0 - 1.0 range using max velocity constant
+        float normalizedVelocity = juce::jlimit(0.0f, 1.0f, velocity / maxVelocityPixelsPerSecond);
         
         // Apply curve
         float curvedValue = applyCurve(normalizedVelocity);

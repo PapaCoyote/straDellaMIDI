@@ -150,8 +150,3 @@ void MouseMidiSettingsWindow::resized()
     buttonArea = buttonArea.removeFromBottom(30);
     closeButton.setBounds(buttonArea.withSizeKeepingCentre(100, 30));
 }
-
-void MouseMidiSettingsWindow::updateMidiExpressionSettings()
-{
-    // This could be used to sync settings if needed
-}

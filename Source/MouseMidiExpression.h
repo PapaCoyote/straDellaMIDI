@@ -63,6 +63,9 @@ private:
     bool expressionEnabled = true;   // CC11 enabled by default
     CurveType curveType = CurveType::Linear;
     
+    // Velocity scaling constants
+    static constexpr float maxVelocityPixelsPerSecond = 2000.0f;  // Max velocity for normalization
+    
     juce::Point<float> lastMousePosition;
     juce::Point<float> currentMousePosition;
     juce::int64 lastMouseTime = 0;
