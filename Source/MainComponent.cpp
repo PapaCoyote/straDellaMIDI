@@ -10,6 +10,31 @@ MainComponent::MainComponent()
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
     addAndMakeVisible(midiDisplay.get());
     
+    // Create mouse MIDI expression component
+    mouseMidiExpression = std::make_unique<MouseMidiExpression>();
+    mouseMidiExpression->onMidiMessage = [this](const juce::MidiMessage& msg)
+    {
+        sendMidiMessage(msg);
+        
+        // Display CC messages in MIDI log
+        juce::MessageManager::callAsync([this, msg]()
+        {
+            if (midiDisplay != nullptr)
+                midiDisplay->addMidiMessage(msg);
+        });
+    };
+    addAndMakeVisible(mouseMidiExpression.get());
+    
+    // Create mouse settings window (initially hidden)
+    mouseSettingsWindow = std::make_unique<MouseMidiSettingsWindow>(*mouseMidiExpression);
+    mouseSettingsWindow->setVisible(false);
+    addAndMakeVisible(mouseSettingsWindow.get());
+    
+    // Create settings button
+    mouseSettingsButton.setButtonText("Mouse Settings");
+    mouseSettingsButton.onClick = [this] { toggleMouseSettings(); };
+    addAndMakeVisible(mouseSettingsButton);
+    
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();
     if (!midiDevices.isEmpty())
@@ -57,6 +82,10 @@ void MainComponent::resized()
     
     auto area = getLocalBounds();
     
+    // Mouse settings button at top right
+    auto topBar = area.removeFromTop(30);
+    mouseSettingsButton.setBounds(topBar.removeFromRight(120).reduced(2));
+    
     // MIDI display at the bottom
     if (midiDisplay != nullptr)
     {
@@ -64,10 +93,25 @@ void MainComponent::resized()
         midiDisplay->setBounds(midiArea);
     }
     
+    // Split remaining space: keyboard on left, mouse expression on right
+    auto mouseArea = area.removeFromRight(200);
+    
+    // Mouse MIDI expression area
+    if (mouseMidiExpression != nullptr)
+    {
+        mouseMidiExpression->setBounds(mouseArea);
+    }
+    
     // Keyboard GUI takes the remaining space
     if (keyboardGUI != nullptr)
     {
         keyboardGUI->setBounds(area);
+    }
+    
+    // Position settings window in center (when visible)
+    if (mouseSettingsWindow != nullptr && mouseSettingsWindow->isVisible())
+    {
+        mouseSettingsWindow->centreWithSize(400, 300);
     }
 }
 
@@ -199,5 +243,21 @@ void MainComponent::sendMidiMessage(const juce::MidiMessage& message)
     if (midiOutput != nullptr)
     {
         midiOutput->sendMessageNow(message);
+    }
+}
+
+void MainComponent::toggleMouseSettings()
+{
+    if (mouseSettingsWindow != nullptr)
+    {
+        bool currentlyVisible = mouseSettingsWindow->isVisible();
+        mouseSettingsWindow->setVisible(!currentlyVisible);
+        
+        if (!currentlyVisible)
+        {
+            // Center the window when showing
+            mouseSettingsWindow->centreWithSize(400, 300);
+            mouseSettingsWindow->toFront(true);
+        }
     }
 }
