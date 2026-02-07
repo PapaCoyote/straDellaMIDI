@@ -85,6 +85,8 @@ midi_value = apply_curve(normalized_y) * 127
 
 ### Components
 - **MouseMidiExpression**: Core component handling mouse input and MIDI generation
+  - Inherits from `juce::Component` and overrides mouse event methods
+  - No separate MouseListener needed (Component has built-in mouse events)
 - **MouseMidiSettingsWindow**: Configuration UI for user preferences
 - **MainComponent**: Integrates mouse expression with existing keyboard functionality
 
