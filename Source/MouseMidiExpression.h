@@ -10,8 +10,7 @@
     
     Uses global mouse tracking to monitor movement across the entire desktop.
 */
-class MouseMidiExpression : public juce::MouseListener,
-                            private juce::Timer
+class MouseMidiExpression : private juce::Timer
 {
 public:
     //==============================================================================
@@ -56,12 +55,6 @@ public:
 
 private:
     //==============================================================================
-    // MouseListener interface
-    void mouseMove(const juce::MouseEvent& event) override;
-    void mouseDrag(const juce::MouseEvent& event) override;
-    void mouseDown(const juce::MouseEvent& event) override;
-    void mouseUp(const juce::MouseEvent& event) override;
-    
     // Timer callback for polling mouse position
     void timerCallback() override;
     
@@ -80,7 +73,6 @@ private:
     int lastModulationValue = 64;   // Last sent CC1 value (0-127)
     int lastExpressionValue = 64;   // Last sent CC11 value (0-127)
     
-    juce::Component* desktopComponent = nullptr;
     juce::Rectangle<int> screenBounds;
     
     //==============================================================================

@@ -2,37 +2,41 @@
 
 ## Overview
 
-The Mouse MIDI Expression feature emulates the action of accordion bellows by translating mouse movement into MIDI Control Change (CC) messages. This provides expressive control over volume and expression in real-time.
+The Mouse MIDI Expression feature emulates the action of accordion bellows by translating mouse movement into MIDI Control Change (CC) messages. This provides expressive control over modulation and expression in real-time.
+
+**Key Features:**
+- **Global mouse tracking** - Works across entire desktop, not just within the application window
+- **No visual area required** - Mouse tracking happens in the background
+- **Real-time MIDI CC generation** - Immediate response to mouse movement
 
 ## Features
 
-### CC7 (Volume) - Mouse Velocity
+### CC1 (Modulation Wheel) - Mouse Velocity
 - Controlled by the speed of mouse movement
-- Faster mouse movement = higher volume value
+- Faster mouse movement = higher modulation value
 - Range: 0-127 (MIDI standard)
 - Tracks velocity in pixels per second
 - Independent enable/disable control
 
 ### CC11 (Expression) - Y Position  
-- Controlled by the vertical (Y) position of the mouse
-- Top of the area = maximum expression (127)
-- Bottom of the area = minimum expression (0)
-- Provides continuous positional feedback
+- Controlled by the vertical (Y) position of the mouse on the screen
+- Top of the screen = maximum expression (127)
+- Bottom of the screen = minimum expression (0)
+- Provides continuous positional feedback based on desktop coordinates
 - Independent enable/disable control
 
 ## User Interface
 
-### Mouse Expression Area
-- Located on the right side of the main window (200px wide)
-- Visual crosshair indicator shows current mouse position
-- Semi-transparent background indicates active area
-- Real-time display of enabled CC types
+### Mouse Expression Tracking
+- **Global tracking** - Mouse movement is tracked across the entire desktop
+- **No visual area** - No dedicated GUI component needed
+- **Transparent operation** - Works in the background while you use the application
 
 ### Settings Window
 Access via the "Mouse Settings" button in the top-right corner.
 
 **Available Settings:**
-1. **CC7 (Volume) Checkbox** - Enable/disable velocity-based volume control
+1. **CC1 (Modulation Wheel) Checkbox** - Enable/disable velocity-based modulation control
 2. **CC11 (Expression) Checkbox** - Enable/disable Y-position-based expression control
 3. **Response Curve Selector** - Choose how MIDI values respond to input:
    - **Linear**: Direct 1:1 mapping (default)
@@ -42,20 +46,28 @@ Access via the "Mouse Settings" button in the top-right corner.
 ## Usage
 
 1. **Launch the application** and ensure MIDI output is connected
-2. **Move your mouse** over the Mouse Expression area (right panel)
+2. **Move your mouse** anywhere on your desktop
 3. **Adjust settings** by clicking "Mouse Settings" button:
-   - Check/uncheck CC7 or CC11 as needed
+   - Check/uncheck CC1 or CC11 as needed
    - Select desired response curve
    - Close settings window
 4. **Play notes** using the keyboard while moving the mouse for expression
 
+The mouse tracking works globally - you don't need to keep your mouse over the application window.
+
 ## Technical Details
 
 ### MIDI CC Messages
-- **CC7**: MIDI standard for Channel Volume
+- **CC1**: MIDI standard for Modulation Wheel
 - **CC11**: MIDI standard for Expression
 - **Channel**: All messages sent on MIDI Channel 1
 - **Value Range**: 0-127 for both controllers
+
+### Global Mouse Tracking
+- Uses JUCE's Desktop API to get global mouse position
+- Polls at ~60 Hz (16ms intervals) via Timer
+- Works across entire primary display
+- No window focus required
 
 ### Velocity Calculation
 ```
@@ -66,7 +78,7 @@ midi_value = apply_curve(normalized_velocity) * 127
 
 ### Expression Calculation
 ```
-normalized_y = 1.0 - (mouse_y / height)
+normalized_y = 1.0 - (mouse_screen_y / screen_height)
 midi_value = apply_curve(normalized_y) * 127
 ```
 
@@ -85,14 +97,15 @@ midi_value = apply_curve(normalized_y) * 127
 
 ### Components
 - **MouseMidiExpression**: Core component handling mouse input and MIDI generation
-  - Inherits from `juce::Component` and overrides mouse event methods
-  - No separate MouseListener needed (Component has built-in mouse events)
+  - Uses Timer for global mouse position polling
+  - No visual component needed
+  - Tracks mouse across entire desktop
 - **MouseMidiSettingsWindow**: Configuration UI for user preferences
 - **MainComponent**: Integrates mouse expression with existing keyboard functionality
 
 ### MIDI Output Flow
 ```
-Mouse Movement → MouseMidiExpression → MainComponent::sendMidiMessage() → MIDI Output Device
+Global Mouse Movement → Timer Poll → MouseMidiExpression → MainComponent::sendMidiMessage() → MIDI Output Device
 ```
 
 ### Message Display
@@ -113,16 +126,20 @@ Possible additions for future versions:
 
 **Mouse movements aren't generating MIDI:**
 - Ensure at least one CC type is enabled in settings
-- Verify mouse is moving within the Mouse Expression area
 - Check MIDI output device is connected
+- Verify application is running (tracking works even when window is not focused)
+- Check console logs for debug messages
 
 **CC values seem wrong or inverted:**
 - Try different curve types in settings
-- For CC11, remember: top = high, bottom = low
+- For CC11, remember: top of screen = high, bottom = low
+- Check that your DAW is receiving on MIDI Channel 1
 
-**Settings window won't open:**
-- Click "Mouse Settings" button in top-right
-- If hidden, try clicking again to toggle
+**DAW not receiving CC messages:**
+- Verify the application's MIDI output is connected to your DAW input
+- Check your DAW's MIDI learn or monitor to see incoming messages
+- Some DAWs require you to enable CC input or map controllers
+- Check console logs to verify messages are being sent with correct format
 
 ## Code Files
 

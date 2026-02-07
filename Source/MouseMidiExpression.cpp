@@ -19,26 +19,13 @@ MouseMidiExpression::~MouseMidiExpression()
 
 void MouseMidiExpression::startTracking()
 {
-    // Get the desktop component for global mouse tracking
-    desktopComponent = &juce::Desktop::getInstance().getComponent(0);
-    if (desktopComponent != nullptr)
-    {
-        desktopComponent->addMouseListener(this, true);
-    }
-    
-    // Start timer to poll mouse position (fallback for global tracking)
+    // Start timer to poll mouse position globally
     startTimer(16); // ~60 Hz polling
 }
 
 void MouseMidiExpression::stopTracking()
 {
     stopTimer();
-    
-    if (desktopComponent != nullptr)
-    {
-        desktopComponent->removeMouseListener(this);
-        desktopComponent = nullptr;
-    }
 }
 
 void MouseMidiExpression::timerCallback()
@@ -51,31 +38,6 @@ void MouseMidiExpression::timerCallback()
     {
         processMouseMovement(mousePos);
     }
-}
-
-//==============================================================================
-void MouseMidiExpression::mouseMove(const juce::MouseEvent& event)
-{
-    processMouseMovement(event.getScreenPosition().toInt());
-}
-
-void MouseMidiExpression::mouseDrag(const juce::MouseEvent& event)
-{
-    processMouseMovement(event.getScreenPosition().toInt());
-}
-
-void MouseMidiExpression::mouseDown(const juce::MouseEvent& event)
-{
-    // Reset tracking when mouse is pressed
-    auto pos = event.getScreenPosition().toInt();
-    lastMousePosition = pos;
-    currentMousePosition = pos;
-    lastMouseTime = juce::Time::currentTimeMillis();
-}
-
-void MouseMidiExpression::mouseUp(const juce::MouseEvent& event)
-{
-    // Could optionally reset expression values here
 }
 
 //==============================================================================
@@ -192,6 +154,13 @@ void MouseMidiExpression::sendModulationCC(int value)
     {
         // CC1 = Modulation Wheel, using channel 1 (MIDI channels are 1-based in the API)
         auto message = juce::MidiMessage::controllerEvent(1, 1, value);
+        
+        // Debug log to verify message is being created
+        juce::Logger::writeToLog("Sending CC1 (Modulation): value=" + juce::String(value) + 
+                                  " channel=" + juce::String(message.getChannel()) +
+                                  " controller=" + juce::String(message.getControllerNumber()) +
+                                  " controllerValue=" + juce::String(message.getControllerValue()));
+        
         onMidiMessage(message);
     }
 }
@@ -204,6 +173,13 @@ void MouseMidiExpression::sendExpressionCC(int value)
     {
         // CC11 = Expression, using channel 1 (MIDI channels are 1-based in the API)
         auto message = juce::MidiMessage::controllerEvent(1, 11, value);
+        
+        // Debug log to verify message is being created
+        juce::Logger::writeToLog("Sending CC11 (Expression): value=" + juce::String(value) + 
+                                  " channel=" + juce::String(message.getChannel()) +
+                                  " controller=" + juce::String(message.getControllerNumber()) +
+                                  " controllerValue=" + juce::String(message.getControllerValue()));
+        
         onMidiMessage(message);
     }
 }
