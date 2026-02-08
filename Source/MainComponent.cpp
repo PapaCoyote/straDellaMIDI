@@ -125,7 +125,7 @@ bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* origi
     if (keyCode >= 'a' && keyCode <= 'z')
         keyCode = keyCode - 'a' + 'A';
     
-    // Check if this key is already pressed to avoid repeated triggering
+    // Check if this key is already pressed to avoid OS key repeat (macOS)
     if (!currentlyPressedKeys.contains(keyCode))
     {
         handleKeyPress(keyCode);
@@ -133,7 +133,9 @@ bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* origi
         return true;
     }
     
-    return false;
+    // Key is already pressed - this is an OS key repeat, ignore it but return true
+    // to indicate we've handled the event (prevents JUCE from processing it further)
+    return true;
 }
 
 bool MainComponent::keyStateChanged(bool isKeyDown, juce::Component* originatingComponent)
