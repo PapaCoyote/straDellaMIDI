@@ -32,7 +32,7 @@ MainComponent::MainComponent()
     addAndMakeVisible(mouseSettingsWindow.get());
     
     // Create settings button
-    mouseSettingsButton.setButtonText("Mouse Settings");
+    mouseSettingsButton.setButtonText("Expression Settings");
     mouseSettingsButton.onClick = [this] { toggleMouseSettings(); };
     addAndMakeVisible(mouseSettingsButton);
     
@@ -85,7 +85,7 @@ void MainComponent::resized()
     
     // Mouse settings button at top right
     auto topBar = area.removeFromTop(30);
-    mouseSettingsButton.setBounds(topBar.removeFromRight(120).reduced(2));
+    mouseSettingsButton.setBounds(topBar.removeFromRight(140).reduced(2));  // Increased width for longer text
     
     // MIDI display at the bottom
     if (midiDisplay != nullptr)
@@ -103,7 +103,7 @@ void MainComponent::resized()
     // Position settings window in center (when visible)
     if (mouseSettingsWindow != nullptr && mouseSettingsWindow->isVisible())
     {
-        mouseSettingsWindow->centreWithSize(400, 300);
+        mouseSettingsWindow->centreWithSize(400, 400);
     }
 }
 
@@ -171,15 +171,22 @@ void MainComponent::handleKeyPress(int keyCode)
     
     if (isValidKey && !midiNotes.isEmpty())
     {
+        // Get velocity from MouseMidiExpression (defaults to 0 for accordion bellows behavior)
+        int velocity = 100;  // Default fallback
+        if (mouseMidiExpression != nullptr)
+        {
+            velocity = mouseMidiExpression->getBaseNoteVelocity();
+        }
+        
         // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
-            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
             sendMidiMessage(message);
         }
         
         // NON-CRITICAL: Update GUI asynchronously (won't block MIDI)
-        juce::MessageManager::callAsync([this, keyCode, midiNotes]()
+        juce::MessageManager::callAsync([this, keyCode, midiNotes, velocity]()
         {
             if (keyboardGUI != nullptr)
                 keyboardGUI->setKeyPressed(keyCode, true);
@@ -189,7 +196,7 @@ void MainComponent::handleKeyPress(int keyCode)
             {
                 for (int noteNumber : midiNotes)
                 {
-                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
                     midiDisplay->addMidiMessage(message);
                 }
             }
@@ -247,8 +254,8 @@ void MainComponent::toggleMouseSettings()
         
         if (!currentlyVisible)
         {
-            // Center the window when showing
-            mouseSettingsWindow->centreWithSize(400, 300);
+            // Center the window when showing - updated size
+            mouseSettingsWindow->centreWithSize(400, 400);
             mouseSettingsWindow->toFront(true);
         }
     }

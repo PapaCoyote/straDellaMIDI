@@ -6,7 +6,7 @@
 /**
     Handles mouse-based MIDI expression control, emulating accordion bellows.
     - Mouse velocity affects CC1 (Modulation Wheel)
-    - Mouse Y position affects CC11 (Expression)
+    - Mouse velocity affects CC11 (Expression)
     
     Uses global mouse tracking to monitor movement across the entire desktop.
 */
@@ -44,6 +44,12 @@ public:
     /** Gets the current curve type */
     CurveType getCurveType() const { return curveType; }
     
+    /** Sets the base note velocity (0-127) for key press events */
+    void setBaseNoteVelocity(int velocity) { baseNoteVelocity = juce::jlimit(0, 127, velocity); }
+    
+    /** Gets the base note velocity */
+    int getBaseNoteVelocity() const { return baseNoteVelocity; }
+    
     /** Callback for MIDI message output */
     std::function<void(const juce::MidiMessage&)> onMidiMessage;
     
@@ -62,6 +68,7 @@ private:
     bool modulationEnabled = true;      // CC1 enabled by default
     bool expressionEnabled = true;      // CC11 enabled by default
     CurveType curveType = CurveType::Linear;
+    int baseNoteVelocity = 0;           // Default velocity for key press (0 = silent, mimicking accordion)
     
     // Velocity scaling constants
     static constexpr float maxVelocityPixelsPerSecond = 2000.0f;  // Max velocity for normalization

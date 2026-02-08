@@ -51,20 +51,21 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     if (timeDelta <= 0)
         timeDelta = 1;
     
-    // Calculate velocity from mouse movement (for CC1 - Modulation Wheel)
+    // Calculate velocity from mouse movement
+    float velocity = calculateVelocity(lastMousePosition, currentMousePosition, timeDelta);
+    
+    // Normalize velocity to 0.0 - 1.0 range using max velocity constant
+    float normalizedVelocity = juce::jlimit(0.0f, 1.0f, velocity / maxVelocityPixelsPerSecond);
+    
+    // Apply curve
+    float curvedValue = applyCurve(normalizedVelocity);
+    
+    // Convert to MIDI value (0-127)
+    int midiValue = (int)(curvedValue * 127.0f);
+    
+    // Send CC1 (Modulation Wheel) if enabled
     if (modulationEnabled)
     {
-        float velocity = calculateVelocity(lastMousePosition, currentMousePosition, timeDelta);
-        
-        // Normalize velocity to 0.0 - 1.0 range using max velocity constant
-        float normalizedVelocity = juce::jlimit(0.0f, 1.0f, velocity / maxVelocityPixelsPerSecond);
-        
-        // Apply curve
-        float curvedValue = applyCurve(normalizedVelocity);
-        
-        // Convert to MIDI value (0-127)
-        int midiValue = (int)(curvedValue * 127.0f);
-        
         // Only send if value changed significantly
         if (std::abs(midiValue - lastModulationValue) >= 1)
         {
@@ -73,32 +74,15 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         }
     }
     
-    // Calculate expression from Y position (for CC11 - Expression)
+    // Send CC11 (Expression) with same velocity if enabled
+    // This ensures both CC messages are sent in the same processing cycle (no latency increase)
     if (expressionEnabled)
     {
-        float height = (float)screenBounds.getHeight();
-        if (height > 0)
+        // Only send if value changed significantly
+        if (std::abs(midiValue - lastExpressionValue) >= 1)
         {
-            // Y position relative to screen
-            float relativeY = currentMousePosition.y - screenBounds.getY();
-            
-            // Y position: top = 0 (high expression), bottom = max (low expression)
-            // Invert so that top = high value, bottom = low value
-            float normalizedY = 1.0f - (relativeY / height);
-            normalizedY = juce::jlimit(0.0f, 1.0f, normalizedY);
-            
-            // Apply curve
-            float curvedValue = applyCurve(normalizedY);
-            
-            // Convert to MIDI value (0-127)
-            int midiValue = (int)(curvedValue * 127.0f);
-            
-            // Only send if value changed significantly
-            if (std::abs(midiValue - lastExpressionValue) >= 1)
-            {
-                sendExpressionCC(midiValue);
-                lastExpressionValue = midiValue;
-            }
+            sendExpressionCC(midiValue);
+            lastExpressionValue = midiValue;
         }
     }
     
