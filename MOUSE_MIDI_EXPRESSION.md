@@ -2,12 +2,13 @@
 
 ## Overview
 
-The Mouse MIDI Expression feature emulates the action of accordion bellows by translating mouse movement into MIDI Control Change (CC) messages. This provides expressive control over modulation and expression in real-time.
+The Mouse MIDI Expression feature emulates the action of accordion bellows by translating mouse movement into MIDI Control Change (CC) messages. This provides expressive control over modulation and expression in real-time, while also mimicking authentic accordion behavior where notes require bellows movement to produce sound.
 
 **Key Features:**
 - **Global mouse tracking** - Works across entire desktop, not just within the application window
 - **No visual area required** - Mouse tracking happens in the background
 - **Real-time MIDI CC generation** - Immediate response to mouse movement
+- **Authentic accordion behavior** - Notes default to 0 velocity (silent) unless bellows (mouse) is moving
 
 ## Features
 
@@ -18,12 +19,17 @@ The Mouse MIDI Expression feature emulates the action of accordion bellows by tr
 - Tracks velocity in pixels per second
 - Independent enable/disable control
 
-### CC11 (Expression) - Y Position  
-- Controlled by the vertical (Y) position of the mouse on the screen
-- Top of the screen = maximum expression (127)
-- Bottom of the screen = minimum expression (0)
-- Provides continuous positional feedback based on desktop coordinates
+### CC11 (Expression) - Mouse Velocity  
+- Also controlled by the speed of mouse movement (same as CC1)
+- Provides additional expressive control tied to bellows motion
+- Range: 0-127 (MIDI standard)
+- Both CC1 and CC11 sent simultaneously (no latency increase)
 - Independent enable/disable control
+
+### Key Press Velocity Control
+- **Default: 0 (silent)** - Mimics accordion behavior where keys produce no sound without bellows movement
+- **Adjustable: 0-127** - Slider in settings allows increasing base velocity for more expressiveness
+- Configurable via "Expression Settings" window
 
 ## User Interface
 
@@ -33,27 +39,31 @@ The Mouse MIDI Expression feature emulates the action of accordion bellows by tr
 - **Transparent operation** - Works in the background while you use the application
 
 ### Settings Window
-Access via the "Mouse Settings" button in the top-right corner.
+Access via the "Expression Settings" button in the top-right corner.
 
 **Available Settings:**
-1. **CC1 (Modulation Wheel) Checkbox** - Enable/disable velocity-based modulation control
-2. **CC11 (Expression) Checkbox** - Enable/disable Y-position-based expression control
+1. **CC1 (Modulation) Checkbox** - Enable/disable velocity-based modulation control
+2. **CC11 (Expression) Checkbox** - Enable/disable velocity-based expression control
 3. **Response Curve Selector** - Choose how MIDI values respond to input:
    - **Linear**: Direct 1:1 mapping (default)
    - **Exponential**: Slower response at low values, faster at high values (x²)
    - **Logarithmic**: Faster response at low values, slower at high values (√x)
+4. **Key Press Velocity Slider** - Set base note velocity (0-127):
+   - **0 (default)**: Silent keys without mouse movement (authentic accordion)
+   - **1-127**: Adds expressiveness by allowing keys to produce sound even when mouse is still
 
 ## Usage
 
 1. **Launch the application** and ensure MIDI output is connected
-2. **Move your mouse** anywhere on your desktop
-3. **Adjust settings** by clicking "Mouse Settings" button:
+2. **Move your mouse** anywhere on your desktop to generate CC messages
+3. **Play notes** using the keyboard - they will be silent unless you adjust the velocity slider
+4. **Adjust settings** by clicking "Expression Settings" button:
    - Check/uncheck CC1 or CC11 as needed
    - Select desired response curve
+   - Adjust Key Press Velocity slider (0 for authentic accordion behavior)
    - Close settings window
-4. **Play notes** using the keyboard while moving the mouse for expression
 
-The mouse tracking works globally - you don't need to keep your mouse over the application window.
+**Authentic Accordion Behavior:** By default, keys produce no sound (velocity=0) until you move the mouse (bellows). This mimics real accordion behavior where the bellows must be moving to produce sound.
 
 ## Technical Details
 
@@ -62,6 +72,7 @@ The mouse tracking works globally - you don't need to keep your mouse over the a
 - **CC11**: MIDI standard for Expression
 - **Channel**: All messages sent on MIDI Channel 1
 - **Value Range**: 0-127 for both controllers
+- **Latency**: Both CC messages sent in same processing cycle (no additional latency)
 
 ### Global Mouse Tracking
 - Uses JUCE's Desktop API to get global mouse position
@@ -70,17 +81,20 @@ The mouse tracking works globally - you don't need to keep your mouse over the a
 - No window focus required
 
 ### Velocity Calculation
+Both CC1 and CC11 use the same velocity calculation:
 ```
 velocity = distance / time_delta
 normalized_velocity = min(1.0, velocity / 2000.0)
 midi_value = apply_curve(normalized_velocity) * 127
 ```
 
-### Expression Calculation
+### Key Press Velocity
 ```
-normalized_y = 1.0 - (mouse_screen_y / screen_height)
-midi_value = apply_curve(normalized_y) * 127
+note_velocity = baseNoteVelocity  // Default: 0 (silent)
 ```
+- Adjustable via slider: 0-127
+- 0 = authentic accordion (no sound without bellows movement)
+- Higher values = more expressiveness
 
 ### Curve Functions
 - **Linear**: `f(x) = x`
@@ -105,11 +119,12 @@ midi_value = apply_curve(normalized_y) * 127
 
 ### MIDI Output Flow
 ```
-Global Mouse Movement → Timer Poll → MouseMidiExpression → MainComponent::sendMidiMessage() → MIDI Output Device
+Global Mouse Movement → Timer Poll → Velocity Calculation → CC1 + CC11 (simultaneous) → MIDI Output Device
+Key Press → baseNoteVelocity → Note On → MIDI Output Device
 ```
 
 ### Message Display
-All CC messages are logged in the MIDI Message Display panel at the bottom of the window, alongside note on/off messages.
+All CC messages and note events are logged in the MIDI Message Display panel at the bottom of the window.
 
 ## Future Enhancements
 
@@ -132,8 +147,13 @@ Possible additions for future versions:
 
 **CC values seem wrong or inverted:**
 - Try different curve types in settings
-- For CC11, remember: top of screen = high, bottom = low
+- Both CC1 and CC11 use the same velocity value (from mouse speed)
 - Check that your DAW is receiving on MIDI Channel 1
+
+**Keys aren't making sound:**
+- This is expected! By default, key press velocity is 0 (authentic accordion behavior)
+- Increase "Key Press Velocity" slider in Expression Settings
+- Or ensure you're moving the mouse (bellows) while playing
 
 **DAW not receiving CC messages:**
 - Verify the application's MIDI output is connected to your DAW input
