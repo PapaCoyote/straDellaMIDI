@@ -10,6 +10,32 @@ MainComponent::MainComponent()
     midiDisplay = std::make_unique<MIDIMessageDisplay>();
     addAndMakeVisible(midiDisplay.get());
     
+    // Create mouse MIDI expression component (no visual component needed)
+    mouseMidiExpression = std::make_unique<MouseMidiExpression>();
+    mouseMidiExpression->onMidiMessage = [this](const juce::MidiMessage& msg)
+    {
+        sendMidiMessage(msg);
+        
+        // Display CC messages in MIDI log
+        juce::MessageManager::callAsync([this, msg]()
+        {
+            if (midiDisplay != nullptr)
+                midiDisplay->addMidiMessage(msg);
+        });
+    };
+    // Start global mouse tracking
+    mouseMidiExpression->startTracking();
+    
+    // Create mouse settings window (initially hidden)
+    mouseSettingsWindow = std::make_unique<MouseMidiSettingsWindow>(*mouseMidiExpression);
+    mouseSettingsWindow->setVisible(false);
+    addAndMakeVisible(mouseSettingsWindow.get());
+    
+    // Create settings button
+    mouseSettingsButton.setButtonText("Expression Settings");
+    mouseSettingsButton.onClick = [this] { toggleMouseSettings(); };
+    addAndMakeVisible(mouseSettingsButton);
+    
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();
     if (!midiDevices.isEmpty())
@@ -57,6 +83,10 @@ void MainComponent::resized()
     
     auto area = getLocalBounds();
     
+    // Mouse settings button at top right
+    auto topBar = area.removeFromTop(30);
+    mouseSettingsButton.setBounds(topBar.removeFromRight(140).reduced(2));  // Increased width for longer text
+    
     // MIDI display at the bottom
     if (midiDisplay != nullptr)
     {
@@ -64,10 +94,16 @@ void MainComponent::resized()
         midiDisplay->setBounds(midiArea);
     }
     
-    // Keyboard GUI takes the remaining space
+    // Keyboard GUI takes the full remaining space
     if (keyboardGUI != nullptr)
     {
         keyboardGUI->setBounds(area);
+    }
+    
+    // Position settings window in center (when visible)
+    if (mouseSettingsWindow != nullptr && mouseSettingsWindow->isVisible())
+    {
+        mouseSettingsWindow->centreWithSize(400, 400);
     }
 }
 
@@ -89,7 +125,7 @@ bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* origi
     if (keyCode >= 'a' && keyCode <= 'z')
         keyCode = keyCode - 'a' + 'A';
     
-    // Check if this key is already pressed to avoid repeated triggering
+    // Check if this key is already pressed to avoid OS key repeat (macOS)
     if (!currentlyPressedKeys.contains(keyCode))
     {
         handleKeyPress(keyCode);
@@ -97,7 +133,9 @@ bool MainComponent::keyPressed(const juce::KeyPress& key, juce::Component* origi
         return true;
     }
     
-    return false;
+    // Key is already pressed - this is an OS key repeat, ignore it but return true
+    // to indicate we've handled the event (prevents JUCE from processing it further)
+    return true;
 }
 
 bool MainComponent::keyStateChanged(bool isKeyDown, juce::Component* originatingComponent)
@@ -135,15 +173,22 @@ void MainComponent::handleKeyPress(int keyCode)
     
     if (isValidKey && !midiNotes.isEmpty())
     {
+        // Get velocity from MouseMidiExpression (defaults to 0 for accordion bellows behavior)
+        int velocity = 100;  // Default fallback
+        if (mouseMidiExpression != nullptr)
+        {
+            velocity = mouseMidiExpression->getBaseNoteVelocity();
+        }
+        
         // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
-            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
             sendMidiMessage(message);
         }
         
         // NON-CRITICAL: Update GUI asynchronously (won't block MIDI)
-        juce::MessageManager::callAsync([this, keyCode, midiNotes]()
+        juce::MessageManager::callAsync([this, keyCode, midiNotes, velocity]()
         {
             if (keyboardGUI != nullptr)
                 keyboardGUI->setKeyPressed(keyCode, true);
@@ -153,7 +198,7 @@ void MainComponent::handleKeyPress(int keyCode)
             {
                 for (int noteNumber : midiNotes)
                 {
-                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)100);
+                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
                     midiDisplay->addMidiMessage(message);
                 }
             }
@@ -199,5 +244,21 @@ void MainComponent::sendMidiMessage(const juce::MidiMessage& message)
     if (midiOutput != nullptr)
     {
         midiOutput->sendMessageNow(message);
+    }
+}
+
+void MainComponent::toggleMouseSettings()
+{
+    if (mouseSettingsWindow != nullptr)
+    {
+        bool currentlyVisible = mouseSettingsWindow->isVisible();
+        mouseSettingsWindow->setVisible(!currentlyVisible);
+        
+        if (!currentlyVisible)
+        {
+            // Center the window when showing - updated size
+            mouseSettingsWindow->centreWithSize(400, 400);
+            mouseSettingsWindow->toFront(true);
+        }
     }
 }

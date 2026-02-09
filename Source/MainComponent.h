@@ -4,6 +4,8 @@
 #include "StradellaKeyboardMapper.h"
 #include "KeyboardGUI.h"
 #include "MIDIMessageDisplay.h"
+#include "MouseMidiExpression.h"
+#include "MouseMidiSettingsWindow.h"
 
 //==============================================================================
 /*
@@ -35,6 +37,11 @@ private:
     std::unique_ptr<KeyboardGUI> keyboardGUI;
     std::unique_ptr<MIDIMessageDisplay> midiDisplay;
     
+    // Mouse MIDI expression components
+    std::unique_ptr<MouseMidiExpression> mouseMidiExpression;
+    std::unique_ptr<MouseMidiSettingsWindow> mouseSettingsWindow;
+    juce::TextButton mouseSettingsButton;
+    
     // MIDI output
     std::unique_ptr<juce::MidiOutput> midiOutput;
     
@@ -44,6 +51,7 @@ private:
     void sendMidiMessage(const juce::MidiMessage& message);
     void handleKeyPress(int keyCode);
     void handleKeyRelease(int keyCode);
+    void toggleMouseSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
