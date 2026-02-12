@@ -110,7 +110,7 @@ void MainComponent::resized()
     // Position settings window in center (when visible)
     if (mouseSettingsWindow != nullptr && mouseSettingsWindow->isVisible())
     {
-        mouseSettingsWindow->centreWithSize(400, 400);
+        mouseSettingsWindow->centreWithSize(400, 350);
     }
 }
 
@@ -318,8 +318,8 @@ void MainComponent::toggleMouseSettings()
         
         if (!currentlyVisible)
         {
-            // Center the window when showing - updated size
-            mouseSettingsWindow->centreWithSize(400, 400);
+            // Center the window when showing
+            mouseSettingsWindow->centreWithSize(400, 350);
             mouseSettingsWindow->toFront(true);
         }
     }
