@@ -159,23 +159,6 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     lastMouseTime = currentTime;
 }
 
-float MouseMidiExpression::calculateVelocity(const juce::Point<int>& from, 
-                                             const juce::Point<int>& to, 
-                                             juce::int64 timeDelta)
-{
-    // Calculate distance moved
-    float dx = (float)(to.x - from.x);
-    float dy = (float)(to.y - from.y);
-    float distance = std::sqrt(dx * dx + dy * dy);
-    
-    // Calculate velocity in pixels per second
-    float timeInSeconds = timeDelta / 1000.0f;
-    if (timeInSeconds > 0)
-        return distance / timeInSeconds;
-    
-    return 0.0f;
-}
-
 int MouseMidiExpression::calculateVelocityFromYPosition(int yPos) const
 {
     // Map Y position to velocity: top of screen (y=0) = 127, bottom = 0
