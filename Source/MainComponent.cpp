@@ -190,7 +190,7 @@ void MainComponent::handleKeyPress(int keyCode)
         // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
-            auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+            auto message = juce::MidiMessage::noteOn(defaultMidiChannel, noteNumber, (juce::uint8)velocity);
             sendMidiMessage(message);
         }
         
@@ -205,7 +205,7 @@ void MainComponent::handleKeyPress(int keyCode)
             {
                 for (int noteNumber : midiNotes)
                 {
-                    auto message = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+                    auto message = juce::MidiMessage::noteOn(defaultMidiChannel, noteNumber, (juce::uint8)velocity);
                     midiDisplay->addMidiMessage(message);
                 }
             }
@@ -223,7 +223,7 @@ void MainComponent::handleKeyRelease(int keyCode)
         // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
         for (int noteNumber : midiNotes)
         {
-            auto message = juce::MidiMessage::noteOff(1, noteNumber);
+            auto message = juce::MidiMessage::noteOff(defaultMidiChannel, noteNumber);
             sendMidiMessage(message);
         }
         
@@ -238,7 +238,7 @@ void MainComponent::handleKeyRelease(int keyCode)
             {
                 for (int noteNumber : midiNotes)
                 {
-                    auto message = juce::MidiMessage::noteOff(1, noteNumber);
+                    auto message = juce::MidiMessage::noteOff(defaultMidiChannel, noteNumber);
                     midiDisplay->addMidiMessage(message);
                 }
             }
@@ -272,14 +272,14 @@ void MainComponent::retriggerCurrentlyPressedKeys()
             // Send note off for all notes
             for (int noteNumber : midiNotes)
             {
-                auto offMessage = juce::MidiMessage::noteOff(1, noteNumber);
+                auto offMessage = juce::MidiMessage::noteOff(defaultMidiChannel, noteNumber);
                 sendMidiMessage(offMessage);
             }
             
             // Immediately send note on with current velocity
             for (int noteNumber : midiNotes)
             {
-                auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+                auto onMessage = juce::MidiMessage::noteOn(defaultMidiChannel, noteNumber, (juce::uint8)velocity);
                 sendMidiMessage(onMessage);
             }
             
@@ -290,8 +290,8 @@ void MainComponent::retriggerCurrentlyPressedKeys()
                 {
                     for (int noteNumber : midiNotes)
                     {
-                        auto offMessage = juce::MidiMessage::noteOff(1, noteNumber);
-                        auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+                        auto offMessage = juce::MidiMessage::noteOff(defaultMidiChannel, noteNumber);
+                        auto onMessage = juce::MidiMessage::noteOn(defaultMidiChannel, noteNumber, (juce::uint8)velocity);
                         midiDisplay->addMidiMessage(offMessage);
                         midiDisplay->addMidiMessage(onMessage);
                     }

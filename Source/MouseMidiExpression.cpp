@@ -121,7 +121,7 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     {
         // Smooth decay to 0 - each CC decays from its own last value
         float decayFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
-            (timeSinceLastXMovement - decayDelayMs) / ccDecayDurationMs);
+            (float)(timeSinceLastXMovement - decayDelayMs) / (float)ccDecayDurationMs);
         
         cc1Value = (int)(lastModulationValue * decayFactor);
         cc11Value = (int)(lastExpressionValue * decayFactor);
@@ -164,7 +164,13 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
 int MouseMidiExpression::calculateVelocityFromYPosition(int yPos) const
 {
     // Map Y position to velocity: top of screen (y=0) = 127, bottom = 0
-    float normalizedY = (float)yPos / (float)screenBounds.getHeight();
+    int screenHeight = screenBounds.getHeight();
+    
+    // Guard against division by zero (edge case with unusual display configurations)
+    if (screenHeight <= 0)
+        screenHeight = 1;
+    
+    float normalizedY = (float)yPos / (float)screenHeight;
     normalizedY = juce::jlimit(0.0f, 1.0f, normalizedY);
     
     // Invert: top = 127, bottom = 0

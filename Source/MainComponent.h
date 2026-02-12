@@ -44,6 +44,7 @@ private:
     
     // MIDI output
     std::unique_ptr<juce::MidiOutput> midiOutput;
+    static constexpr int defaultMidiChannel = 1;  // MIDI channel for all output
     
     // Track currently pressed keys
     juce::Array<int> currentlyPressedKeys;
