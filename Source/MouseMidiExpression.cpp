@@ -49,7 +49,7 @@ void MouseMidiExpression::timerCallback()
         juce::int64 timeSinceLastXMovement = currentTime - lastXMovementTime;
         
         // If we should be decaying, process movement with same position
-        if (timeSinceLastXMovement > decayTimeMs && (lastModulationValue > 0 || lastExpressionValue > 0))
+        if (timeSinceLastXMovement > decayDelayMs && (lastModulationValue > 0 || lastExpressionValue > 0))
         {
             processMouseMovement(mousePos);
         }
@@ -95,9 +95,9 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         wasMovingInLastFrame = true;
     }
     
-    // Check if we should decay CC values (no X movement for decay time)
+    // Check if we should decay CC values (no X movement for decay delay time)
     juce::int64 timeSinceLastXMovement = currentTime - lastXMovementTime;
-    bool shouldDecay = timeSinceLastXMovement > decayTimeMs;
+    bool shouldDecay = timeSinceLastXMovement > decayDelayMs;
     
     // Calculate CC values based on Y position, but only when moving in X
     int ccValue = 0;
@@ -113,11 +113,12 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     }
     else if (shouldDecay)
     {
-        // Smooth decay to 0
+        // Smooth decay to 0 - use the maximum of the last values to ensure both decay together
+        int lastMaxValue = std::max(lastModulationValue, lastExpressionValue);
         float decayFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
-            (timeSinceLastXMovement - decayTimeMs) / ccDecayDurationMs);
+            (timeSinceLastXMovement - decayDelayMs) / ccDecayDurationMs);
         
-        ccValue = (int)(lastModulationValue * decayFactor);
+        ccValue = (int)(lastMaxValue * decayFactor);
         wasMovingInLastFrame = false;
     }
     else
