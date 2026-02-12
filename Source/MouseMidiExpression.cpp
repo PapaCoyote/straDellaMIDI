@@ -100,52 +100,59 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     bool shouldDecay = timeSinceLastXMovement > decayDelayMs;
     
     // Calculate CC values based on Y position, but only when moving in X
-    int ccValue = 0;
+    int cc1Value = 0;
+    int cc11Value = 0;
+    
     if (isMovingInX)
     {
         // Use Y position for CC values (same as note velocity)
-        ccValue = currentNoteVelocity;
+        int ccValue = currentNoteVelocity;
         
         // Apply curve
         float normalized = ccValue / 127.0f;
         float curved = applyCurve(normalized);
         ccValue = (int)(curved * 127.0f);
+        
+        // Both CCs use same value when moving
+        cc1Value = ccValue;
+        cc11Value = ccValue;
     }
     else if (shouldDecay)
     {
-        // Smooth decay to 0 - use the maximum of the last values to ensure both decay together
-        int lastMaxValue = std::max(lastModulationValue, lastExpressionValue);
+        // Smooth decay to 0 - each CC decays from its own last value
         float decayFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
             (timeSinceLastXMovement - decayDelayMs) / ccDecayDurationMs);
         
-        ccValue = (int)(lastMaxValue * decayFactor);
+        cc1Value = (int)(lastModulationValue * decayFactor);
+        cc11Value = (int)(lastExpressionValue * decayFactor);
         wasMovingInLastFrame = false;
     }
     else
     {
-        // Keep last value briefly
-        ccValue = lastModulationValue;
+        // Keep last values briefly during delay period
+        cc1Value = lastModulationValue;
+        cc11Value = lastExpressionValue;
     }
     
     // Send CC1 (Modulation Wheel) if enabled
     if (modulationEnabled)
     {
         // Only send if value changed significantly
-        if (std::abs(ccValue - lastModulationValue) >= 1)
+        if (std::abs(cc1Value - lastModulationValue) >= 1)
         {
-            sendModulationCC(ccValue);
-            lastModulationValue = ccValue;
+            sendModulationCC(cc1Value);
+            lastModulationValue = cc1Value;
         }
     }
     
-    // Send CC11 (Expression) with same value if enabled
+    // Send CC11 (Expression) with its own value if enabled
     if (expressionEnabled)
     {
         // Only send if value changed significantly
-        if (std::abs(ccValue - lastExpressionValue) >= 1)
+        if (std::abs(cc11Value - lastExpressionValue) >= 1)
         {
-            sendExpressionCC(ccValue);
-            lastExpressionValue = ccValue;
+            sendExpressionCC(cc11Value);
+            lastExpressionValue = cc11Value;
         }
     }
     
