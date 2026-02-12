@@ -77,10 +77,10 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     // Update direction and detect changes if moving in X
     if (isMovingInX)
     {
-        bool newDirection = (deltaX > 0);
+        bool isMovingRightNow = (deltaX > 0);
         
         // Detect direction change only if we were moving in the previous frame
-        if (wasMovingInLastFrame && newDirection != isMovingRight)
+        if (wasMovingInLastFrame && isMovingRightNow != isMovingRight)
         {
             // Direction changed! Trigger note retrigger callback
             if (onDirectionChange)
@@ -90,7 +90,7 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         }
         
         // Update direction
-        isMovingRight = newDirection;
+        isMovingRight = isMovingRightNow;
         lastXMovementTime = currentTime;
         wasMovingInLastFrame = true;
     }
@@ -115,7 +115,7 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     {
         // Smooth decay to 0
         float decayFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
-            (timeSinceLastXMovement - decayTimeMs) / 200.0f); // 200ms decay time
+            (timeSinceLastXMovement - decayTimeMs) / ccDecayDurationMs);
         
         ccValue = (int)(lastModulationValue * decayFactor);
         wasMovingInLastFrame = false;

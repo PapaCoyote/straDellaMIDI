@@ -77,7 +77,8 @@ private:
     bool isMovingRight = true;          // Track horizontal direction
     bool wasMovingInLastFrame = false;  // Track if mouse was moving
     juce::int64 lastXMovementTime = 0;  // Time of last X movement
-    static constexpr juce::int64 decayTimeMs = 100; // Time delay before CC decay starts
+    static constexpr juce::int64 decayTimeMs = 100; // Time delay before CC decay starts (decay takes 200ms after this)
+    static constexpr float ccDecayDurationMs = 200.0f; // Duration of CC value decay to 0
     
     // Velocity scaling constants
     static constexpr float maxVelocityPixelsPerSecond = 2000.0f;  // Max velocity for normalization
