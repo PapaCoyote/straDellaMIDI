@@ -94,6 +94,11 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         lastXMovementTime = currentTime;
         wasMovingInLastFrame = true;
     }
+    else
+    {
+        // Not moving in X - reset the flag for accurate direction change detection
+        wasMovingInLastFrame = false;
+    }
     
     // Check if we should decay CC values (no X movement for decay delay time)
     juce::int64 timeSinceLastXMovement = currentTime - lastXMovementTime;
@@ -125,7 +130,13 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         
         cc1Value = (int)(lastModulationValue * decayFactor);
         cc11Value = (int)(lastExpressionValue * decayFactor);
-        wasMovingInLastFrame = false;
+        
+        // If decay is complete, ensure values are actually 0
+        if (decayFactor <= 0.0f)
+        {
+            cc1Value = 0;
+            cc11Value = 0;
+        }
     }
     else
     {
