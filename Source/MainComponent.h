@@ -51,6 +51,7 @@ private:
     void sendMidiMessage(const juce::MidiMessage& message);
     void handleKeyPress(int keyCode);
     void handleKeyRelease(int keyCode);
+    void retriggerCurrentlyPressedKeys();
     void toggleMouseSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

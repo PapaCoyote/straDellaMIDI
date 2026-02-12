@@ -23,6 +23,13 @@ MainComponent::MainComponent()
                 midiDisplay->addMidiMessage(msg);
         });
     };
+    
+    // Handle direction changes (bellows direction change)
+    mouseMidiExpression->onDirectionChange = [this]()
+    {
+        retriggerCurrentlyPressedKeys();
+    };
+    
     // Start global mouse tracking
     mouseMidiExpression->startTracking();
     
@@ -173,11 +180,11 @@ void MainComponent::handleKeyPress(int keyCode)
     
     if (isValidKey && !midiNotes.isEmpty())
     {
-        // Get velocity from MouseMidiExpression (defaults to 0 for accordion bellows behavior)
+        // Get velocity from MouseMidiExpression based on Y position
         int velocity = 100;  // Default fallback
         if (mouseMidiExpression != nullptr)
         {
-            velocity = mouseMidiExpression->getBaseNoteVelocity();
+            velocity = mouseMidiExpression->getCurrentNoteVelocity();
         }
         
         // CRITICAL PATH: Send ALL MIDI messages immediately with ZERO delays
@@ -236,6 +243,61 @@ void MainComponent::handleKeyRelease(int keyCode)
                 }
             }
         });
+    }
+}
+
+void MainComponent::retriggerCurrentlyPressedKeys()
+{
+    // This simulates the bellows changing direction on an accordion
+    // All currently pressed keys briefly stop then resume
+    
+    if (currentlyPressedKeys.isEmpty())
+        return;
+    
+    // Get current velocity from mouse Y position
+    int velocity = 100;  // Default fallback
+    if (mouseMidiExpression != nullptr)
+    {
+        velocity = mouseMidiExpression->getCurrentNoteVelocity();
+    }
+    
+    // For each currently pressed key, send note off then note on
+    for (int keyCode : currentlyPressedKeys)
+    {
+        bool isValidKey = false;
+        auto midiNotes = keyboardMapper.getMidiNotesForKey(keyCode, isValidKey);
+        
+        if (isValidKey && !midiNotes.isEmpty())
+        {
+            // Send note off for all notes
+            for (int noteNumber : midiNotes)
+            {
+                auto offMessage = juce::MidiMessage::noteOff(1, noteNumber);
+                sendMidiMessage(offMessage);
+            }
+            
+            // Immediately send note on with current velocity
+            for (int noteNumber : midiNotes)
+            {
+                auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+                sendMidiMessage(onMessage);
+            }
+            
+            // NON-CRITICAL: Update display asynchronously
+            juce::MessageManager::callAsync([this, midiNotes, velocity]()
+            {
+                if (midiDisplay != nullptr)
+                {
+                    for (int noteNumber : midiNotes)
+                    {
+                        auto offMessage = juce::MidiMessage::noteOff(1, noteNumber);
+                        auto onMessage = juce::MidiMessage::noteOn(1, noteNumber, (juce::uint8)velocity);
+                        midiDisplay->addMidiMessage(offMessage);
+                        midiDisplay->addMidiMessage(onMessage);
+                    }
+                }
+            });
+        }
     }
 }
 
