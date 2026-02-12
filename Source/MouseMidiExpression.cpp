@@ -114,7 +114,7 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
         int ccValue = currentNoteVelocity;
         
         // Apply curve
-        float normalized = ccValue / 127.0f;
+        float normalized = (float)ccValue / 127.0f;
         float curved = applyCurve(normalized);
         ccValue = (int)(curved * 127.0f);
         
@@ -125,14 +125,15 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     else if (shouldDecay)
     {
         // Smooth decay to 0 - each CC decays from its own last value
-        float decayFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
+        // Calculate remaining factor (1.0 = full value, 0.0 = fully decayed)
+        float remainingFactor = 1.0f - juce::jlimit(0.0f, 1.0f, 
             (float)(timeSinceLastXMovement - decayDelayMs) / (float)ccDecayDurationMs);
         
-        cc1Value = (int)(lastModulationValue * decayFactor);
-        cc11Value = (int)(lastExpressionValue * decayFactor);
+        cc1Value = (int)(lastModulationValue * remainingFactor);
+        cc11Value = (int)(lastExpressionValue * remainingFactor);
         
         // If decay is complete, ensure values are actually 0
-        if (decayFactor <= 0.0f)
+        if (remainingFactor <= 0.0f)
         {
             cc1Value = 0;
             cc11Value = 0;
