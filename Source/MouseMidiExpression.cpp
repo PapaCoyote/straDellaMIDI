@@ -74,29 +74,23 @@ void MouseMidiExpression::processMouseMovement(const juce::Point<int>& mousePos)
     int deltaX = currentMousePosition.x - lastMousePosition.x;
     bool isMovingInX = std::abs(deltaX) > 0;
     
-    // Detect X direction change
-    if (isMovingInX && wasMovingInLastFrame)
+    // Update direction and detect changes if moving in X
+    if (isMovingInX)
     {
         bool newDirection = (deltaX > 0);
-        if (newDirection != isMovingRight)
+        
+        // Detect direction change only if we were moving in the previous frame
+        if (wasMovingInLastFrame && newDirection != isMovingRight)
         {
             // Direction changed! Trigger note retrigger callback
-            isMovingRight = newDirection;
             if (onDirectionChange)
             {
                 onDirectionChange();
             }
         }
-    }
-    
-    // Update direction if moving
-    if (isMovingInX)
-    {
-        if (deltaX > 0)
-            isMovingRight = true;
-        else if (deltaX < 0)
-            isMovingRight = false;
-            
+        
+        // Update direction
+        isMovingRight = newDirection;
         lastXMovementTime = currentTime;
         wasMovingInLastFrame = true;
     }
