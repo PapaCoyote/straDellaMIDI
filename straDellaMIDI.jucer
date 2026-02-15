@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="mRpQPw" name="straDellaMIDI" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+<JUCERPROJECT id="mRpQPw" name="straDellaMIDI" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
+              pluginManufacturer="PapaCoyote" pluginCode="Strd" pluginManufacturerCode="Papa"
+              pluginName="straDellaMIDI" pluginDesc="Stradella MIDI Accordion Emulator"
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
+              pluginIsMidiEffectPlugin="1" pluginEditorRequiresKeys="1"
+              pluginAUMainType="'aumi'" pluginAUExportPrefix="StraDellaMIDIAU">
   <MAINGROUP id="hzqdgA" name="straDellaMIDI">
     <GROUP id="{87331AC2-30B9-CC76-91EC-5955ADAC7716}" name="Source">
-      <FILE id="gwiOSW" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="mz3io1" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
-      <FILE id="hPgJZ1" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
+      <FILE id="proc01" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="proc02" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="edit01" name="PluginEditor.h" compile="0" resource="0"
+            file="Source/PluginEditor.h"/>
+      <FILE id="edit02" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
       <FILE id="skm001" name="StradellaKeyboardMapper.h" compile="0" resource="0"
             file="Source/StradellaKeyboardMapper.h"/>
       <FILE id="skm002" name="StradellaKeyboardMapper.cpp" compile="1" resource="0"
