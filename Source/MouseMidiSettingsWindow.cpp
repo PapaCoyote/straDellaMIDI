@@ -17,7 +17,7 @@ void MouseMidiSettingsWindow::setupUI()
 {
     // Title
     titleLabel.setText("Expression Settings", juce::dontSendNotification);
-    titleLabel.setFont(juce::Font(18.0f, juce::Font::bold));
+    titleLabel.setFont(juce::FontOptions(18.0f).withStyle(juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centred);
     addAndMakeVisible(titleLabel);
     
