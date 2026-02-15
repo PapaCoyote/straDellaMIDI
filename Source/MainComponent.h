@@ -40,7 +40,11 @@ private:
     // Mouse MIDI expression components
     std::unique_ptr<MouseMidiExpression> mouseMidiExpression;
     std::unique_ptr<MouseMidiSettingsWindow> mouseSettingsWindow;
-    juce::TextButton mouseSettingsButton;
+    
+    // Settings buttons (bottom bar)
+    juce::TextButton noteMapSettingsButton;
+    juce::TextButton midiSettingsButton;
+    juce::TextButton expressionSettingsButton;
     
     // MIDI output
     std::unique_ptr<juce::MidiOutput> midiOutput;
@@ -54,6 +58,8 @@ private:
     void handleKeyRelease(int keyCode);
     void retriggerCurrentlyPressedKeys();
     void toggleMouseSettings();
+    void showNoteMapSettings();
+    void showMidiSettings();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
