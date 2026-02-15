@@ -34,9 +34,6 @@ private:
     juce::ComboBox curveSelector;
     juce::Label curveLabel;
     
-    juce::Slider velocitySlider;
-    juce::Label velocityLabel;
-    
     juce::TextButton closeButton;
     
     //==============================================================================

@@ -5,8 +5,10 @@
 //==============================================================================
 /**
     Handles mouse-based MIDI expression control, emulating accordion bellows.
-    - Mouse velocity affects CC1 (Modulation Wheel)
-    - Mouse velocity affects CC11 (Expression)
+    - Mouse Y position determines note velocity (127 at top, 0 at bottom)
+    - Mouse Y position determines CC1 and CC11 (only when moving in X direction)
+    - CC1 and CC11 decay to 0 when X movement stops
+    - X direction changes trigger note off/on for all pressed keys
     
     Uses global mouse tracking to monitor movement across the entire desktop.
 */
@@ -44,14 +46,14 @@ public:
     /** Gets the current curve type */
     CurveType getCurveType() const { return curveType; }
     
-    /** Sets the base note velocity (0-127) for key press events */
-    void setBaseNoteVelocity(int velocity) { baseNoteVelocity = juce::jlimit(0, 127, velocity); }
-    
-    /** Gets the base note velocity */
-    int getBaseNoteVelocity() const { return baseNoteVelocity; }
+    /** Gets the current note velocity based on mouse Y position (127 at top, 0 at bottom) */
+    int getCurrentNoteVelocity() const { return currentNoteVelocity; }
     
     /** Callback for MIDI message output */
     std::function<void(const juce::MidiMessage&)> onMidiMessage;
+    
+    /** Callback when X direction changes (bellows direction change) */
+    std::function<void()> onDirectionChange;
     
     /** Starts global mouse tracking */
     void startTracking();
@@ -68,7 +70,15 @@ private:
     bool modulationEnabled = true;      // CC1 enabled by default
     bool expressionEnabled = true;      // CC11 enabled by default
     CurveType curveType = CurveType::Linear;
-    int baseNoteVelocity = 0;           // Default velocity for key press (0 = silent, mimicking accordion)
+    
+    int currentNoteVelocity = 0;        // Current velocity based on Y position
+    
+    // Direction tracking
+    bool isMovingRight = true;          // Track horizontal direction
+    bool wasMovingInLastFrame = false;  // Track if mouse was moving
+    juce::int64 lastXMovementTime = 0;  // Time of last X movement
+    static constexpr juce::int64 decayDelayMs = 100; // Time delay before CC decay starts
+    static constexpr juce::int64 ccDecayDurationMs = 200; // Duration of CC value decay to 0
     
     // Velocity scaling constants
     static constexpr float maxVelocityPixelsPerSecond = 2000.0f;  // Max velocity for normalization
@@ -86,9 +96,12 @@ private:
     /** Processes mouse movement and generates MIDI messages */
     void processMouseMovement(const juce::Point<int>& mousePos);
     
-    /** Calculates velocity from mouse movement */
-    float calculateVelocity(const juce::Point<int>& from, const juce::Point<int>& to, 
-                           juce::int64 timeDelta);
+    /** Calculates velocity from mouse Y position (127 at top, 0 at bottom) */
+    int calculateVelocityFromYPosition(int yPos) const;
+    
+    /** Calculates X movement velocity */
+    float calculateXVelocity(const juce::Point<int>& from, const juce::Point<int>& to, 
+                            juce::int64 timeDelta);
     
     /** Applies curve to a normalized value (0.0 to 1.0) */
     float applyCurve(float normalizedValue) const;

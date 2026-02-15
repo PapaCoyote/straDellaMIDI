@@ -5,7 +5,7 @@ MouseMidiSettingsWindow::MouseMidiSettingsWindow(MouseMidiExpression& midiExpres
     : mouseMidiExpression(midiExpression)
 {
     setupUI();
-    setSize(400, 400);  // Increased height to accommodate new slider
+    setSize(400, 350);  // Adjusted height for removed slider
 }
 
 MouseMidiSettingsWindow::~MouseMidiSettingsWindow()
@@ -22,7 +22,7 @@ void MouseMidiSettingsWindow::setupUI()
     addAndMakeVisible(titleLabel);
     
     // CC1 (Modulation Wheel) checkbox
-    modulationLabel.setText("CC1 (Modulation) - Mouse Velocity:", juce::dontSendNotification);
+    modulationLabel.setText("CC1 (Modulation) - Y Position (when moving in X):", juce::dontSendNotification);
     addAndMakeVisible(modulationLabel);
     
     modulationCheckbox.setToggleState(mouseMidiExpression.isModulationEnabled(), juce::dontSendNotification);
@@ -33,7 +33,7 @@ void MouseMidiSettingsWindow::setupUI()
     addAndMakeVisible(modulationCheckbox);
     
     // CC11 (Expression) checkbox
-    expressionLabel.setText("CC11 (Expression) - Mouse Velocity:", juce::dontSendNotification);
+    expressionLabel.setText("CC11 (Expression) - Y Position (when moving in X):", juce::dontSendNotification);
     addAndMakeVisible(expressionLabel);
     
     expressionCheckbox.setToggleState(mouseMidiExpression.isExpressionEnabled(), juce::dontSendNotification);
@@ -83,20 +83,6 @@ void MouseMidiSettingsWindow::setupUI()
     };
     addAndMakeVisible(curveSelector);
     
-    // Base Note Velocity slider
-    velocityLabel.setText("Key Press Velocity (0=silent):", juce::dontSendNotification);
-    addAndMakeVisible(velocityLabel);
-    
-    velocitySlider.setRange(0.0, 127.0, 1.0);
-    velocitySlider.setValue(mouseMidiExpression.getBaseNoteVelocity(), juce::dontSendNotification);
-    velocitySlider.setSliderStyle(juce::Slider::LinearHorizontal);
-    velocitySlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
-    velocitySlider.onValueChange = [this]
-    {
-        mouseMidiExpression.setBaseNoteVelocity((int)velocitySlider.getValue());
-    };
-    addAndMakeVisible(velocitySlider);
-    
     // Close button
     closeButton.setButtonText("Close");
     closeButton.onClick = [this]
@@ -122,16 +108,18 @@ void MouseMidiSettingsWindow::paint(juce::Graphics& g)
     
     juce::String infoText = 
         "Configure how mouse movement affects MIDI expression.\n\n"
-        "CC1 (Modulation): Controlled by mouse movement speed\n"
-        "CC11 (Expression): Controlled by mouse movement speed\n\n"
-        "Key Press Velocity: Accordions don't make sound without\n"
-        "bellows movement. Set to 0 for authentic behavior, or\n"
-        "increase for more expressiveness.\n\n"
-        "Curve affects how values respond to input.\n"
+        "Note Velocity: Controlled by mouse Y position\n"
+        "  (top = loud, bottom = quiet)\n\n"
+        "CC1 & CC11: Controlled by mouse Y position, but ONLY\n"
+        "  when moving horizontally. Values decay to 0 when\n"
+        "  horizontal movement stops.\n\n"
+        "Direction Change: Moving left<->right retriggers notes\n"
+        "  to emulate accordion bellows direction change.\n\n"
+        "Curve affects how values respond to Y position.\n"
         "Mouse tracking is global across entire desktop.";
     
     auto infoArea = getLocalBounds().reduced(20);
-    infoArea.removeFromTop(240);  // Adjusted for taller window
+    infoArea.removeFromTop(200);  // Adjusted for removed slider
     
     g.drawMultiLineText(infoText, infoArea.getX(), infoArea.getY(), 
                         infoArea.getWidth(), juce::Justification::left);
@@ -161,15 +149,9 @@ void MouseMidiSettingsWindow::resized()
     auto curveArea = area.removeFromTop(25);
     curveLabel.setBounds(curveArea.removeFromLeft(120));
     curveSelector.setBounds(curveArea.reduced(5, 0));
-    area.removeFromTop(10);
-    
-    // Velocity slider
-    auto velocityArea = area.removeFromTop(25);
-    velocityLabel.setBounds(velocityArea.removeFromLeft(180));
-    velocitySlider.setBounds(velocityArea.reduced(5, 0));
     area.removeFromTop(20);  // Extra space before button
     
-    // Close button at bottom - positioned to avoid overlap
+    // Close button at bottom
     auto buttonArea = getLocalBounds().reduced(20);
     buttonArea = buttonArea.removeFromBottom(40);
     closeButton.setBounds(buttonArea.withSizeKeepingCentre(100, 30));
