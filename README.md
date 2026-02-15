@@ -1,6 +1,8 @@
-# Stradella MIDI - Accordion Emulator
+# Stradella MIDI - Accordion Emulator VST3 Plugin
 
-A JUCE-based application that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output.
+A JUCE-based **VST3 plugin** that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output. Compatible with Logic Pro and other DAWs that support VST3 plugins.
+
+> **Note**: This project now builds as a VST3 plugin. The standalone application files are kept for backwards compatibility.
 
 ## 🎯 Optimized for Low Latency
 
@@ -117,43 +119,72 @@ F = 24      # C1
 R = 36,40,43    # C, E, G
 ```
 
-## Building the Application
+## Building the Plugin
 
-This is a JUCE project. To build:
+This project builds as a **VST3 plugin** for use in DAWs like Logic Pro, Ableton Live, and others.
+
+### Quick Start
 
 1. **Install JUCE Framework**
    - Download from [juce.com](https://juce.com/)
    - Install Projucer
 
-2. **Open the Project**
+2. **Open and Build**
    - Open `straDellaMIDI.jucer` in Projucer
    - Set your JUCE modules path
    - Select your target platform (Xcode, Visual Studio, Linux Makefile)
+   - Click "Save Project" to generate build files
+   - Build using the generated IDE project
 
-3. **Generate Build Files**
-   - Click "Save Project" in Projucer
-   - This generates native IDE projects in the `Builds` folder
+3. **Install the Plugin**
+   - **macOS**: Copy to `~/Library/Audio/Plug-Ins/VST3/`
+   - **Windows**: Copy to `C:\Program Files\Common Files\VST3\`
+   - **Linux**: Copy to `~/.vst3/`
 
-4. **Build**
-   - **macOS**: Open `Builds/MacOSX/straDellaMIDI.xcodeproj` in Xcode and build
-   - **Windows**: Open the Visual Studio solution and build
-   - **Linux**: Use the generated Makefile
+For detailed build instructions, see [VST3_BUILD_GUIDE.md](VST3_BUILD_GUIDE.md).
+
+### Building as Standalone Application (Legacy)
+
+The original standalone application can still be built by:
+1. Changing the project type in Projucer from "Audio Plug-In" to "GUI Application"
+2. Replacing plugin files with the original `Main.cpp`
+3. Rebuilding the project
 
 ## Usage
+
+### In a DAW (Logic Pro, etc.)
+
+1. **Load the Plugin**
+   - Insert straDellaMIDI in a MIDI FX slot
+   - The plugin window will open showing the keyboard interface
+
+2. **Route MIDI Output**
+   - Create an instrument track to receive MIDI from the plugin
+   - Route the plugin's MIDI output to your desired instrument
+
+3. **Play Notes**
+   - Click the plugin window to give it keyboard focus
+   - Press keys to generate MIDI notes:
+     - Single notes: A, S, D, F, G, H, J, K, L, ;
+     - Third intervals: Z, X, C, V, B, N, M, ,, ., /
+     - Major chords: Q, W, E, R, T, Y, U, I, O, P
+     - Minor chords: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+
+4. **Expression Control**
+   - Move your mouse for bellows-style expression
+   - Click "Expression Settings" to configure curves
+   - Monitor MIDI messages in the bottom panel
+
+### As Standalone Application (Legacy)
+
+If you've built the standalone version:
 
 1. Launch the application
 2. Ensure a MIDI output device is available
 3. The application automatically grabs keyboard focus - just start playing!
-4. Press keys to generate MIDI notes:
-   - Single notes: A, S, D, F, G, H, J, K, L, ;
-   - Third intervals: Z, X, C, V, B, N, M, ,, ., /
-   - Major chords: Q, W, E, R, T, Y, U, I, O, P
-   - Minor chords: 1, 2, 3, 4, 5, 6, 7, 8, 9, 0
+4. Press keys to generate MIDI notes (see mapping above)
 5. Watch the visual feedback on the keyboard display
-6. Monitor MIDI messages in the bottom panel (updates asynchronously)
-7. Click "MIDI Messages" button to collapse/expand the message log
-
-**Note**: If keys don't respond, click the application window to ensure it has focus.
+6. Monitor MIDI messages in the bottom panel
 
 ## Testing
 
@@ -164,6 +195,14 @@ See [TESTING_GUIDE.md](TESTING_GUIDE.md) for comprehensive testing instructions 
 
 ## MIDI Output
 
+### As VST3 Plugin
+- The plugin produces MIDI output that is routed through your DAW
+- All notes are sent on MIDI channel 1
+- Note velocity is controlled by mouse Y position (default ~100)
+- Both note-on and note-off messages are sent
+- MIDI CC7 (Volume) and CC11 (Expression) are sent based on mouse movement
+
+### As Standalone Application (Legacy)
 - The application automatically connects to the first available MIDI output device
 - All notes are sent on MIDI channel 1
 - Note velocity is set to 100 (approximately mf - mezzo-forte)
