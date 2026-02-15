@@ -38,10 +38,18 @@ MainComponent::MainComponent()
     mouseSettingsWindow->setVisible(false);
     addAndMakeVisible(mouseSettingsWindow.get());
     
-    // Create settings button
-    mouseSettingsButton.setButtonText("Expression Settings");
-    mouseSettingsButton.onClick = [this] { toggleMouseSettings(); };
-    addAndMakeVisible(mouseSettingsButton);
+    // Create settings buttons (bottom bar)
+    noteMapSettingsButton.setButtonText("Note Map Settings");
+    noteMapSettingsButton.onClick = [this] { showNoteMapSettings(); };
+    addAndMakeVisible(noteMapSettingsButton);
+    
+    midiSettingsButton.setButtonText("MIDI Settings");
+    midiSettingsButton.onClick = [this] { showMidiSettings(); };
+    addAndMakeVisible(midiSettingsButton);
+    
+    expressionSettingsButton.setButtonText("Expression Settings");
+    expressionSettingsButton.onClick = [this] { toggleMouseSettings(); };
+    addAndMakeVisible(expressionSettingsButton);
     
     // Setup MIDI output
     auto midiDevices = juce::MidiOutput::getAvailableDevices();
@@ -90,11 +98,21 @@ void MainComponent::resized()
     
     auto area = getLocalBounds();
     
-    // Mouse settings button at top right
-    auto topBar = area.removeFromTop(30);
-    mouseSettingsButton.setBounds(topBar.removeFromRight(140).reduced(2));  // Increased width for longer text
+    // Settings buttons at the bottom (three buttons side by side)
+    auto bottomBar = area.removeFromBottom(40);
+    const int buttonWidth = 180;
+    const int buttonSpacing = 10;
+    const int totalButtonWidth = (buttonWidth * 3) + (buttonSpacing * 2);
+    const int leftMargin = (bottomBar.getWidth() - totalButtonWidth) / 2;
     
-    // MIDI display at the bottom
+    auto buttonArea = bottomBar.withTrimmedLeft(leftMargin);
+    noteMapSettingsButton.setBounds(buttonArea.removeFromLeft(buttonWidth).reduced(2));
+    buttonArea.removeFromLeft(buttonSpacing);
+    midiSettingsButton.setBounds(buttonArea.removeFromLeft(buttonWidth).reduced(2));
+    buttonArea.removeFromLeft(buttonSpacing);
+    expressionSettingsButton.setBounds(buttonArea.removeFromLeft(buttonWidth).reduced(2));
+    
+    // MIDI display at the bottom (above buttons)
     if (midiDisplay != nullptr)
     {
         auto midiArea = area.removeFromBottom(150);
@@ -323,4 +341,18 @@ void MainComponent::toggleMouseSettings()
             mouseSettingsWindow->toFront(true);
         }
     }
+}
+
+void MainComponent::showNoteMapSettings()
+{
+    // Placeholder for future Note Map Settings dialog
+    // This will be implemented in a future iteration
+    juce::Logger::writeToLog("Note Map Settings button clicked - feature coming soon");
+}
+
+void MainComponent::showMidiSettings()
+{
+    // Placeholder for future MIDI Settings dialog
+    // This will be implemented in a future iteration
+    juce::Logger::writeToLog("MIDI Settings button clicked - feature coming soon");
 }
