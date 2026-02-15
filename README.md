@@ -1,8 +1,10 @@
-# Stradella MIDI - Accordion Emulator VST3 Plugin
+# Stradella MIDI - Accordion Emulator AU/VST3 Plugin
 
-A JUCE-based **VST3 plugin** that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output. Compatible with Logic Pro and other DAWs that support VST3 plugins.
+A JUCE-based **Audio Unit (AU) and VST3 plugin** that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output. **Optimized for Logic Pro** with native AU support, and compatible with other DAWs via VST3.
 
-> **Note**: This project now builds as a VST3 plugin. The standalone application files are kept for backwards compatibility.
+> **⚠️ IMPORTANT**: After cloning/pulling, you **MUST regenerate build files with Projucer** before building! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
+
+> **Note**: This project builds as AU/VST3 plugins. The standalone application files are kept for backwards compatibility.
 
 ## 🎯 Optimized for Low Latency
 
@@ -121,7 +123,9 @@ R = 36,40,43    # C, E, G
 
 ## Building the Plugin
 
-This project builds as a **VST3 plugin** for use in DAWs like Logic Pro, Ableton Live, and others.
+This project builds as an **AU (Audio Unit) and VST3 plugin** for use in DAWs.
+
+> **⚠️ CRITICAL**: You must regenerate build files with Projucer! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
 
 ### Quick Start
 
@@ -129,17 +133,21 @@ This project builds as a **VST3 plugin** for use in DAWs like Logic Pro, Ableton
    - Download from [juce.com](https://juce.com/)
    - Install Projucer
 
-2. **Open and Build**
+2. **Regenerate Build Files** ⚠️ **REQUIRED**
    - Open `straDellaMIDI.jucer` in Projucer
-   - Set your JUCE modules path
-   - Select your target platform (Xcode, Visual Studio, Linux Makefile)
-   - Click "Save Project" to generate build files
-   - Build using the generated IDE project
+   - Set your JUCE modules path (File → Global Paths)
+   - **Click "Save Project"** to regenerate build files
+   - This replaces old GUI app config with plugin config
 
-3. **Install the Plugin**
-   - **macOS**: Copy to `~/Library/Audio/Plug-Ins/VST3/`
-   - **Windows**: Copy to `C:\Program Files\Common Files\VST3\`
-   - **Linux**: Copy to `~/.vst3/`
+3. **Build the Plugin**
+   - Open generated project in Xcode/Visual Studio
+   - Build using the IDE (builds both AU and VST3 on macOS)
+
+4. **Install the Plugin**
+   - **macOS AU** (recommended for Logic Pro): Copy to `~/Library/Audio/Plug-Ins/Components/`
+   - **macOS VST3**: Copy to `~/Library/Audio/Plug-Ins/VST3/`
+   - **Windows VST3**: Copy to `C:\Program Files\Common Files\VST3\`
+   - **Linux VST3**: Copy to `~/.vst3/`
 
 For detailed build instructions, see [VST3_BUILD_GUIDE.md](VST3_BUILD_GUIDE.md).
 
@@ -155,7 +163,8 @@ The original standalone application can still be built by:
 ### In a DAW (Logic Pro, etc.)
 
 1. **Load the Plugin**
-   - Insert straDellaMIDI in a MIDI FX slot
+   - In Logic Pro: Insert straDellaMIDI as a **MIDI FX** plugin (not audio insert)
+   - Use AU format for best Logic Pro integration
    - The plugin window will open showing the keyboard interface
 
 2. **Route MIDI Output**

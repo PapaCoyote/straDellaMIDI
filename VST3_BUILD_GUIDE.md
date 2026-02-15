@@ -1,6 +1,12 @@
-# Building straDellaMIDI as a VST3 Plugin
+# Building straDellaMIDI as an AU/VST3 Plugin
 
-This guide explains how to build the straDellaMIDI application as a VST3 plugin compatible with Logic Pro and other DAWs.
+This guide explains how to build the straDellaMIDI application as an **AU (Audio Unit) and VST3 plugin** compatible with Logic Pro and other DAWs.
+
+## ⚠️ CRITICAL: Build Files Must Be Regenerated!
+
+**If you've just cloned or pulled this repository**, the build files in `Builds/` are outdated and still configured for the old GUI application. You **MUST regenerate them using Projucer** before building, or you'll get a standalone .app instead of plugins!
+
+See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md) for detailed instructions.
 
 ## Prerequisites
 
@@ -15,7 +21,7 @@ This guide explains how to build the straDellaMIDI application as a VST3 plugin 
 
 ## Building the Plugin
 
-### Step 1: Open the Project in Projucer
+### Step 1: Open the Project in Projucer ⚠️ REQUIRED
 
 1. Launch Projucer
 2. Open `straDellaMIDI.jucer` from the project root directory
@@ -25,17 +31,19 @@ This guide explains how to build the straDellaMIDI application as a VST3 plugin 
 
 ### Step 2: Configure Build Settings
 
-The project is already configured to build as a VST3 plugin with the following settings:
+The project is already configured to build as an AU and VST3 plugin with the following settings:
 
 - **Project Type**: Audio Plug-In
-- **Plugin Formats**: VST3
+- **Plugin Formats**: AU (Audio Unit), VST3
 - **Plugin Characteristics**:
   - MIDI Effect Plugin: Yes
   - Wants MIDI Input: Yes
   - Produces MIDI Output: Yes
   - Editor Requires Keyboard Focus: Yes
 
-### Step 3: Generate IDE Project Files
+### Step 3: Generate IDE Project Files ⚠️ CRITICAL STEP
+
+**This step regenerates the build files and is REQUIRED for plugin building!**
 
 1. In Projucer, select your target platform:
    - **macOS**: Xcode
@@ -43,7 +51,9 @@ The project is already configured to build as a VST3 plugin with the following s
    - **Linux**: Linux Makefile
 
 2. Click **"Save Project"** or press `Cmd+S` (Mac) / `Ctrl+S` (Win)
-   - This generates native build files in the `Builds/` directory
+   - This regenerates ALL build files in the `Builds/` directory
+   - Old GUI app configuration is replaced with plugin configuration
+   - Creates proper Info-AU.plist and Info-VST3.plist files
 
 ### Step 4: Build the Plugin
 
@@ -55,14 +65,18 @@ cd Builds/MacOSX
 # Open in Xcode
 open straDellaMIDI.xcodeproj
 
-# Or build from command line
+# Or build from command line (builds both AU and VST3)
 xcodebuild -project straDellaMIDI.xcodeproj -configuration Release
 ```
 
-The VST3 plugin will be built to:
+The plugins will be built to:
 ```
-Builds/MacOSX/build/Release/straDellaMIDI.vst3
+Builds/MacOSX/build/Release/
+├── straDellaMIDI.component  (AU plugin - best for Logic Pro)
+└── straDellaMIDI.vst3       (VST3 plugin)
 ```
+
+**Note**: If you only see a `.app` file, you forgot to regenerate the build files in Projucer!
 
 #### Windows (Visual Studio)
 ```cmd
@@ -80,6 +94,8 @@ The VST3 plugin will be built to:
 ```
 Builds\VisualStudio2022\x64\Release\VST3\straDellaMIDI.vst3
 ```
+
+**Note**: Audio Unit (AU) format is only available on macOS.
 
 #### Linux (Makefile)
 ```bash
@@ -101,20 +117,42 @@ Builds/LinuxMakefile/build/straDellaMIDI.vst3
 ## Installing the Plugin
 
 ### macOS
-Copy the `.vst3` bundle to one of these locations:
+
+Copy both plugin formats to their respective locations:
+
+**Audio Unit (AU) - Recommended for Logic Pro:**
 ```bash
-# User location (recommended)
-~/Library/Audio/Plug-Ins/VST3/straDellaMIDI.vst3
+# Copy AU plugin (recommended for Logic Pro)
+cp -r Builds/MacOSX/build/Release/straDellaMIDI.component \
+     ~/Library/Audio/Plug-Ins/Components/
+
+# Verify installation
+ls -la ~/Library/Audio/Plug-Ins/Components/straDellaMIDI.component
+```
+
+**VST3:**
+```bash
+# Copy VST3 plugin (for other DAWs)
+cp -r Builds/MacOSX/build/Release/straDellaMIDI.vst3 \
+     ~/Library/Audio/Plug-Ins/VST3/
 
 # System location (requires admin)
-/Library/Audio/Plug-Ins/VST3/straDellaMIDI.vst3
+# sudo cp -r ... /Library/Audio/Plug-Ins/VST3/
 ```
+
+**Why AU for Logic Pro?**
+- AU is Apple's native format with better macOS/Logic Pro integration
+- Direct support for all Logic Pro features
+- Faster plugin scanning and loading
+- Better stability and compatibility
 
 ### Windows
 Copy the `.vst3` folder to:
 ```
 C:\Program Files\Common Files\VST3\straDellaMIDI.vst3
 ```
+
+**Note**: Audio Unit format is not available on Windows.
 
 ### Linux
 Copy the `.vst3` folder to:

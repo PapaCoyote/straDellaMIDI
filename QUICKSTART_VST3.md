@@ -1,22 +1,40 @@
-# Quick Start: straDellaMIDI VST3 Plugin
+# Quick Start: straDellaMIDI AU/VST3 Plugin
+
+## ⚠️ MUST DO FIRST: Regenerate Build Files!
+
+**Before building**, you MUST regenerate build files with Projucer or you'll get a GUI app instead of plugins!
+
+```bash
+# Open in Projucer
+Projucer straDellaMIDI.jucer
+
+# In Projucer:
+# 1. File → Global Paths (set JUCE modules path)
+# 2. Save Project (Cmd+S / Ctrl+S)
+# This regenerates build files for plugins!
+```
+
+See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md) for details.
 
 ## 🚀 Quick Setup
 
 ### 1. Build the Plugin
 ```bash
 # Prerequisites: Install JUCE from juce.com
+# Then regenerate build files (see above)
 
-# Open in Projucer
-Projucer straDellaMIDI.jucer
-
-# Save project (generates build files)
-# Build with Xcode/Visual Studio/Make
+# Build with Xcode/Visual Studio
+cd Builds/MacOSX
+xcodebuild -project straDellaMIDI.xcodeproj -configuration Release
 ```
 
 ### 2. Install
 ```bash
-# macOS
-cp -r build/straDellaMIDI.vst3 ~/Library/Audio/Plug-Ins/VST3/
+# macOS - Install AU (recommended for Logic Pro)
+cp -r build/Release/straDellaMIDI.component ~/Library/Audio/Plug-Ins/Components/
+
+# macOS - Install VST3 (for other DAWs)  
+cp -r build/Release/straDellaMIDI.vst3 ~/Library/Audio/Plug-Ins/VST3/
 
 # Windows
 copy straDellaMIDI.vst3 "C:\Program Files\Common Files\VST3\"
@@ -27,7 +45,7 @@ cp -r straDellaMIDI.vst3 ~/.vst3/
 
 ### 3. Use in Logic Pro
 1. Create Software Instrument track
-2. Add **straDellaMIDI** as MIDI FX
+2. Add **straDellaMIDI (AU)** as MIDI FX
 3. Add instrument below it
 4. Click plugin window for focus
 5. Play using your keyboard!

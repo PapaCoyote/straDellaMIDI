@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="mRpQPw" name="straDellaMIDI" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildVST3"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
               pluginManufacturer="PapaCoyote" pluginCode="Strd" pluginManufacturerCode="Papa"
               pluginName="straDellaMIDI" pluginDesc="Stradella MIDI Accordion Emulator"
               pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
-              pluginIsMidiEffectPlugin="1" pluginEditorRequiresKeys="1">
+              pluginIsMidiEffectPlugin="1" pluginEditorRequiresKeys="1"
+              pluginAUMainType="'aumi'" pluginAUExportPrefix="StraDellaMIDIAU">
   <MAINGROUP id="hzqdgA" name="straDellaMIDI">
     <GROUP id="{87331AC2-30B9-CC76-91EC-5955ADAC7716}" name="Source">
       <FILE id="proc01" name="PluginProcessor.h" compile="0" resource="0"
