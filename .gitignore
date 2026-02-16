@@ -6,6 +6,17 @@ Builds/**/DerivedData/
 Builds/**/*.xcodeproj/xcuserdata/
 Builds/**/*.xcodeproj/project.xcworkspace/xcuserdata/
 
+# Generated build files (regenerate with Projucer)
+Builds/**/*.xcodeproj/
+Builds/**/*.sln
+Builds/**/*.vcxproj
+Builds/**/*.vcxproj.filters
+Builds/**/Makefile
+Builds/**/Info-*.plist
+Builds/**/*.nib
+# Keep READMEs in build directories
+!Builds/**/README.md
+
 # CodeQL
 _codeql_build_dir/
 _codeql_detected_source_root

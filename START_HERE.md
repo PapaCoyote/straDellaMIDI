@@ -20,8 +20,20 @@
 
 ```
 ✅ CODE: All source files compile without warnings
-❌ BUILD: Missing Xcode plugin configuration
+❌ BUILD: Build files removed - must regenerate with Projucer
 ```
+
+## Common Symptoms
+
+If you have old build files or haven't regenerated, you might see:
+
+- ❌ **8KB .component file** instead of 50-100MB (most common issue!)
+- ❌ **177MB libstraDellaMIDI.a** file (unlinked static library)
+- ❌ `juce_vst3_helper: No such file or directory`
+- ❌ `Command PhaseScriptExecution failed`
+- ❌ Plugin builds but doesn't load in DAW
+
+**All of these are fixed by regenerating build files with Projucer.**
 
 ## Why Builds Are Failing
 
@@ -154,6 +166,7 @@ If you need more details, see these guides:
 
 | Issue | Documentation |
 |-------|---------------|
+| 🔧 8KB Component File | [FIX_8KB_COMPONENT_ISSUE.md](FIX_8KB_COMPONENT_ISSUE.md) |
 | 🔧 VST3 Helper Error | [VST3_HELPER_ERROR_FIX.md](VST3_HELPER_ERROR_FIX.md) |
 | 🔧 AU Build Error | [AU_BUILD_FIX.md](AU_BUILD_FIX.md) |
 | 📋 Quick Reference | [BUILD_ERROR_QUICK_REFERENCE.md](BUILD_ERROR_QUICK_REFERENCE.md) |

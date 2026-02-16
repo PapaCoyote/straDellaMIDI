@@ -2,9 +2,11 @@
 
 A JUCE-based **Audio Unit (AU) and VST3 plugin** that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output. **Optimized for Logic Pro** with native AU support, and compatible with other DAWs via VST3.
 
-> **🚨 BUILD ERRORS?** → See **[START_HERE.md](START_HERE.md)** for quick fix (30 seconds)
+> **🚨 BUILD ERRORS or 8KB .component FILE?** → See **[START_HERE.md](START_HERE.md)** for quick fix (30 seconds)
 
-> **⚠️ IMPORTANT**: After cloning/pulling, you **MUST regenerate build files with Projucer** before building! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
+> **⚠️ IMPORTANT**: Build files are NOT in the repository! You **MUST regenerate build files with Projucer** before building! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
+>
+> If you get an 8KB .component file or 177MB .a library, you're using outdated build files!
 
 > **Note**: This project builds as AU/VST3 plugins. The standalone application files are kept for backwards compatibility.
 
@@ -139,7 +141,8 @@ This project builds as an **AU (Audio Unit) and VST3 plugin** for use in DAWs.
    - Open `straDellaMIDI.jucer` in Projucer
    - Set your JUCE modules path (File → Global Paths)
    - **Click "Save Project"** to regenerate build files
-   - This replaces old GUI app config with plugin config
+   - This creates proper plugin targets (AU, VST3)
+   - **Verify**: Run `./verify_build_config.sh` to check configuration
 
 3. **Build the Plugin**
    - Open generated project in Xcode/Visual Studio
