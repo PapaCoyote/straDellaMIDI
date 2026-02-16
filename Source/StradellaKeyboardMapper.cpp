@@ -21,8 +21,6 @@ void StradellaKeyboardMapper::setupDefaultMappings()
     // Cycle of fifths: each step is +7 semitones (or -5 going backwards)
     // Since we're limited to octave 1, we wrap around within the octave
     
-    const int fKeyNote = 24; // F key produces C1 (changed from C2 to C1)
-    
     // Mapping for single note row (a,s,d,f,g,h,j,k,l,;) - removed apostrophe
     juce::Array<int> singleNoteKeys = { 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';' };
     
