@@ -80,11 +80,13 @@ else
     echo "$TARGETS" | while IFS= read -r target; do
         if [ -n "$target" ]; then
             if echo "$target" | grep -iq "AU"; then
-                echo "   ✅ $target (Audio Unit plugin)"
+                echo "   ✅ $target (Audio Unit plugin - BUILD THIS)"
             elif echo "$target" | grep -iq "VST3"; then
-                echo "   ✅ $target (VST3 plugin)"
+                echo "   ✅ $target (VST3 plugin - BUILD THIS)"
             elif echo "$target" | grep -iq "All"; then
-                echo "   ✅ $target (builds all plugins)"
+                echo "   ✅ $target (builds all plugins - OR BUILD THIS)"
+            elif echo "$target" | grep -iq "Shared.*Code\|Shared Code"; then
+                echo "   ℹ️  $target (static library used by plugins - auto-built, don't build directly)"
             elif echo "$target" | grep -iq "Standalone\|App"; then
                 echo "   ⚠️  $target (standalone app - DO NOT BUILD THIS for plugin)"
             else
