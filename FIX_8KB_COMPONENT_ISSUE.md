@@ -43,7 +43,7 @@ Or double-click `straDellaMIDI.jucer` if Projucer is your default handler.
 
 In Projucer:
 1. Go to **File → Global Paths**
-2. Set "Path to JUCE" to your JUCE modules directory
+2. Set **Path to JUCE** to your JUCE modules directory
    - Typical: `~/JUCE/modules` or `/Applications/JUCE/modules`
 
 ### Step 4: Save/Export Project
