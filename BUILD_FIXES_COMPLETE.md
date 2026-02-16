@@ -45,6 +45,26 @@ titleLabel.setFont(juce::Font(18.0f, juce::Font::bold));
 
 ---
 
+### Issue 4: VST3 Helper Missing Error ⚠️ REQUIRES MANUAL ACTION  
+**Error**: `juce_vst3_helper: No such file or directory`
+
+**Full Error**:
+```
+Running "/Users/.../juce_vst3_helper" > ".../moduleinfo.json"
+line 5: .../juce_vst3_helper: No such file or directory
+Command PhaseScriptExecution failed with a nonzero exit code
+```
+
+**Root Cause**: Same as Issue 3 - Xcode project missing VST3 helper target
+
+**Solution**: Complete guide in [VST3_HELPER_ERROR_FIX.md](VST3_HELPER_ERROR_FIX.md)
+
+**Status**: ⚠️ Documented - requires user to run Projucer to regenerate build files
+
+**Note**: Issues 3 and 4 are the same root problem - outdated Xcode project files. Regenerating with Projucer fixes both.
+
+---
+
 ## Current Build Status
 
 ### Code Compilation

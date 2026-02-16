@@ -268,6 +268,25 @@ The `StradellaKeyboardMapper::loadConfiguration()` method can be extended to:
 - Sustain pedal support
 - Customizable colors and themes
 
+## Troubleshooting Build Errors
+
+### ⚠️ Common Build Issues
+
+If you encounter build errors, see our troubleshooting guides:
+
+**"juce_vst3_helper: No such file or directory"**
+- See: [VST3_HELPER_ERROR_FIX.md](VST3_HELPER_ERROR_FIX.md)
+- Fix: Regenerate build files with Projucer
+
+**"Command PhaseScriptExecution failed"**
+- See: [AU_BUILD_FIX.md](AU_BUILD_FIX.md) or [VST3_HELPER_ERROR_FIX.md](VST3_HELPER_ERROR_FIX.md)
+- Fix: Regenerate build files with Projucer
+
+**Quick Reference**: [BUILD_ERROR_QUICK_REFERENCE.md](BUILD_ERROR_QUICK_REFERENCE.md)
+
+**Why This Happens**: The `.jucer` file is configured for plugins, but the Xcode project in `Builds/MacOSX/` needs to be regenerated to match. This is a one-time setup step that takes about 30 seconds.
+
+
 ## License
 
 This project uses the JUCE framework. Please ensure compliance with JUCE licensing requirements.
