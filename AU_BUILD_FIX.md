@@ -139,14 +139,14 @@ xcode-select --install
 
 ## Code Fixes Applied
 
-The following code warnings have been fixed in this PR:
+The following code issues have been fixed in this PR:
 
 1. **Unused variable** in `StradellaKeyboardMapper.cpp:24`
    - Removed unused `const int fKeyNote = 24;` declaration
 
-2. **Deprecated Font constructor** in `MouseMidiSettingsWindow.cpp:20`
-   - Changed from: `juce::Font(18.0f, juce::Font::bold)`
-   - Changed to: `juce::FontOptions(18.0f).withStyle(juce::Font::bold)`
-   - Uses modern JUCE FontOptions API
+2. **Font constructor** in `MouseMidiSettingsWindow.cpp:20`
+   - Uses standard JUCE Font constructor: `juce::Font(18.0f, juce::Font::bold)`
+   - This is the correct and widely-used JUCE API for creating styled fonts
+   - Consistent with other font usage in the codebase (e.g., MIDIMessageDisplay.cpp)
 
 These fixes eliminate the compilation warnings. The AU build error requires the build file regeneration steps above.

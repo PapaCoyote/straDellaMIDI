@@ -15,19 +15,24 @@ const int fKeyNote = 24; // F key produces C1 (changed from C2 to C1)
 
 **Justification**: This variable was declared but never used in the code. The MIDI note values are hardcoded in the `singleNoteMidiValues` array instead of being calculated from `fKeyNote`.
 
-### 2. ✅ Deprecated Font Constructor Warning - FIXED
-**Error**: `/Users/evanstuckless/JUCE/straDellaMIDI/Source/MouseMidiSettingsWindow.cpp:20:24 'Font' is deprecated: Use the constructor that takes a FontOptions argument`
+### 2. ✅ Font Constructor Issue - FIXED
+**Original Warning**: `/Users/evanstuckless/JUCE/straDellaMIDI/Source/MouseMidiSettingsWindow.cpp:20:24 'Font' is deprecated: Use the constructor that takes a FontOptions argument`
 
-**Fix**: Updated to use modern JUCE FontOptions API
+**Initial Attempt**: Tried to use `FontOptions` API
 ```cpp
-// OLD (deprecated):
-titleLabel.setFont(juce::Font(18.0f, juce::Font::bold));
-
-// NEW (modern API):
+// INITIAL FIX (INCORRECT):
 titleLabel.setFont(juce::FontOptions(18.0f).withStyle(juce::Font::bold));
 ```
 
-**Justification**: The old `Font(size, style)` constructor is deprecated in JUCE 7+. The modern `FontOptions` API provides better flexibility and is the recommended approach.
+**Build Error**: `No viable conversion from 'juce::Font::FontStyleFlags' to 'String'`
+
+**Final Fix**: Use the standard two-parameter Font constructor
+```cpp
+// FINAL FIX (CORRECT):
+titleLabel.setFont(juce::Font(18.0f, juce::Font::bold));
+```
+
+**Justification**: The `Font(size, styleFlags)` constructor is the standard JUCE API for creating styled fonts and is used consistently throughout the codebase (e.g., in MIDIMessageDisplay.cpp). The `FontOptions` API exists but is used differently and does not have a `withStyle()` method that accepts `FontStyleFlags`.
 
 ### 3. ✅ AU Build PhaseScriptExecution Error - DOCUMENTED
 **Error**: `"Command PhaseScriptExecution failed with a nonzero exit code"`
