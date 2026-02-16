@@ -2,6 +2,8 @@
 
 A JUCE-based **Audio Unit (AU) and VST3 plugin** that emulates a Stradella bass accordion using your computer keyboard to generate MIDI output. **Optimized for Logic Pro** with native AU support, and compatible with other DAWs via VST3.
 
+> **🚨 BUILD ERRORS?** → See **[START_HERE.md](START_HERE.md)** for quick fix (30 seconds)
+
 > **⚠️ IMPORTANT**: After cloning/pulling, you **MUST regenerate build files with Projucer** before building! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
 
 > **Note**: This project builds as AU/VST3 plugins. The standalone application files are kept for backwards compatibility.
