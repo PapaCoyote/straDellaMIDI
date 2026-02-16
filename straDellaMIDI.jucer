@@ -4,7 +4,7 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginFormats="buildAU,buildVST3"
               pluginManufacturer="PapaCoyote" pluginCode="Strd" pluginManufacturerCode="Papa"
               pluginName="straDellaMIDI" pluginDesc="Stradella MIDI Accordion Emulator"
-              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
+              pluginIsSynth="1" pluginWantsMidiIn="0" pluginProducesMidiOut="1"
               pluginIsMidiEffectPlugin="1" pluginEditorRequiresKeys="1"
               pluginAUMainType="'aumi'" pluginAUExportPrefix="StraDellaMIDIAU">
   <MAINGROUP id="hzqdgA" name="straDellaMIDI">
