@@ -7,6 +7,8 @@ A JUCE-based **Audio Unit (AU) and VST3 plugin** that emulates a Stradella bass 
 > **⚠️ IMPORTANT**: Build files are NOT in the repository! You **MUST regenerate build files with Projucer** before building! See [REGENERATE_BUILD_FILES.md](REGENERATE_BUILD_FILES.md)
 >
 > If you get an 8KB .component file or 177MB .a library, you're using outdated build files!
+>
+> **Still getting 8KB after regenerating?** → See [TROUBLESHOOT_8KB_AFTER_REGENERATION.md](TROUBLESHOOT_8KB_AFTER_REGENERATION.md) - you're probably building the wrong Xcode target!
 
 > **Note**: This project builds as AU/VST3 plugins. The standalone application files are kept for backwards compatibility.
 

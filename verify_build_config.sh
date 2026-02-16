@@ -65,25 +65,64 @@ fi
 
 echo "✅ Found Info-VST3.plist (VST3 plugin configured)"
 
-# Check if we have Main.cpp (shouldn't be there for plugin-only project)
+# Check for targets in the Xcode project
+echo ""
+echo "🔍 Checking Xcode targets..."
+
+# List all targets
+TARGETS=$(xcodebuild -project "Builds/MacOSX/straDellaMIDI.xcodeproj" -list 2>/dev/null | grep -A 100 "Targets:" | grep -B 100 "Build Configurations:" | grep -v "Targets:\|Build Configurations:" | sed 's/^[[:space:]]*//')
+
+if [ -z "$TARGETS" ]; then
+    echo "⚠️  WARNING: Could not list Xcode targets"
+else
+    echo ""
+    echo "Available targets:"
+    echo "$TARGETS" | while IFS= read -r target; do
+        if [ -n "$target" ]; then
+            if echo "$target" | grep -iq "AU"; then
+                echo "   ✅ $target (Audio Unit plugin)"
+            elif echo "$target" | grep -iq "VST3"; then
+                echo "   ✅ $target (VST3 plugin)"
+            elif echo "$target" | grep -iq "All"; then
+                echo "   ✅ $target (builds all plugins)"
+            elif echo "$target" | grep -iq "Standalone\|App"; then
+                echo "   ⚠️  $target (standalone app - DO NOT BUILD THIS for plugin)"
+            else
+                echo "   ℹ️  $target"
+            fi
+        fi
+    done
+fi
+
+# Check if we have Main.cpp in the project (indicates app target might exist)
 if grep -q "Main.cpp" "Builds/MacOSX/straDellaMIDI.xcodeproj/project.pbxproj" 2>/dev/null; then
     echo ""
-    echo "⚠️  WARNING: Main.cpp found in project!"
-    echo "   This indicates the project might still have standalone app configuration."
-    echo "   Try regenerating the build files with Projucer."
+    echo "⚠️  WARNING: Main.cpp found in Xcode project!"
+    echo "   This file is for standalone apps, not plugins."
+    echo "   If you see a 'Standalone' or 'App' target above, DO NOT build it."
+    echo "   Build the 'AU', 'VST3', or 'All' target instead."
 fi
 
 # All checks passed
 echo ""
 echo "✅ BUILD CONFIGURATION LOOKS GOOD!"
 echo ""
-echo "   You can now build the plugins with:"
+echo "⚠️  CRITICAL: When building in Xcode, make sure you select the correct target!"
+echo ""
+echo "   In Xcode:"
+echo "   1. Select Product → Scheme → Choose 'straDellaMIDI - AU' or 'straDellaMIDI - VST3'"
+echo "   2. Or build 'straDellaMIDI - All' to build both plugins"
+echo "   3. DO NOT build 'straDellaMIDI - Standalone' or 'straDellaMIDI - App' if they exist"
+echo ""
+echo "   From command line:"
 echo "   cd Builds/MacOSX"
-echo "   xcodebuild -project straDellaMIDI.xcodeproj -configuration Release"
+echo "   xcodebuild -project straDellaMIDI.xcodeproj -scheme \"straDellaMIDI - AU\" -configuration Release"
+echo "   xcodebuild -project straDellaMIDI.xcodeproj -scheme \"straDellaMIDI - VST3\" -configuration Release"
 echo ""
-echo "   Expected output:"
-echo "   - straDellaMIDI.component (AU plugin, ~50-100MB)"
-echo "   - straDellaMIDI.vst3 (VST3 plugin)"
+echo "   Expected output in Builds/MacOSX/build/Release/:"
+echo "   - straDellaMIDI.component (AU plugin, ~50-100MB, properly linked)"
+echo "   - straDellaMIDI.vst3 (VST3 plugin, ~50-100MB, properly linked)"
 echo ""
-echo "   NOT an 8KB .component file!"
+echo "   ❌ NOT an 8KB .component file!"
+echo "   ❌ NOT a .app file (that's the standalone, not the plugin!)"
 echo ""

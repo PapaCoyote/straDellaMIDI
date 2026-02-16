@@ -76,12 +76,30 @@ You should see:
 
 ### Step 6: Build the Plugin
 
+**CRITICAL**: Make sure you build the correct target!
+
 ```bash
 cd Builds/MacOSX
-xcodebuild -project straDellaMIDI.xcodeproj -configuration Release
+
+# Build AU plugin specifically
+xcodebuild -project straDellaMIDI.xcodeproj \
+           -scheme "straDellaMIDI - AU" \
+           -configuration Release
+
+# Or build VST3 plugin specifically  
+xcodebuild -project straDellaMIDI.xcodeproj \
+           -scheme "straDellaMIDI - VST3" \
+           -configuration Release
+
+# Or build both at once
+xcodebuild -project straDellaMIDI.xcodeproj \
+           -scheme "straDellaMIDI - All" \
+           -configuration Release
 ```
 
-Or open in Xcode and build there.
+**In Xcode GUI**: Select Product → Scheme → Choose "straDellaMIDI - AU" or "straDellaMIDI - VST3" before building!
+
+DO NOT build "straDellaMIDI - Standalone" or "straDellaMIDI - App" if they appear in the scheme list.
 
 ### Step 7: Verify Output
 
@@ -98,6 +116,8 @@ You should see:
 **NOT**:
 - ❌ 8KB .component file
 - ❌ Standalone .app file
+
+**If you still get an 8KB component file**, see [TROUBLESHOOT_8KB_AFTER_REGENERATION.md](TROUBLESHOOT_8KB_AFTER_REGENERATION.md) - you're likely building the wrong target!
 
 ## Technical Details
 
