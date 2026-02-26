@@ -9,17 +9,16 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "StradellaKeyboardMapper.h"
 
 //==============================================================================
 /**
 */
-class StraDellaMIDIAudioProcessor  : public juce::AudioProcessor
+class StraDellaMIDI_pluginAudioProcessor  : public juce::AudioProcessor
 {
 public:
     //==============================================================================
-    StraDellaMIDIAudioProcessor();
-    ~StraDellaMIDIAudioProcessor() override;
+    StraDellaMIDI_pluginAudioProcessor();
+    ~StraDellaMIDI_pluginAudioProcessor() override;
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -54,24 +53,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    //==============================================================================
-    // Public methods for editor to access
-    StradellaKeyboardMapper& getKeyboardMapper() { return keyboardMapper; }
-    
-    // MIDI output handling - called by editor
-    void addMidiMessageToBuffer(const juce::MidiMessage& message);
-    
-    // Track currently pressed keys for editor
-    juce::Array<int>& getCurrentlyPressedKeys() { return currentlyPressedKeys; }
-
 private:
     //==============================================================================
-    StradellaKeyboardMapper keyboardMapper;
-    juce::Array<int> currentlyPressedKeys;
-    
-    // MIDI buffer for messages from the editor
-    juce::MidiBuffer pendingMidiMessages;
-    juce::CriticalSection midiBufferLock;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StraDellaMIDIAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StraDellaMIDI_pluginAudioProcessor)
 };
